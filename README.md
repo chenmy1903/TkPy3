@@ -5,7 +5,7 @@
 pip install PyQt5 pygments pickleshare autopep8 qdarkstyle
 ```
 ## 运行TkPy3
-> 如果已安装
+> 如果已安装TkPy3
 ```
 python -m TkPy3
 ```
