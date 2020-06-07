@@ -1,8 +1,11 @@
 # -*- coding: UTF-8 -*-
+import jedi
+from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QFont
-from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import *
 import autopep8
+from conda_build.os_utils.pyldd import fileview
+
 from TkPy3.default_configs import get_configs, add_diff
 from TkPy3.tkpy3_tools.text import PygmentsHighlighter
 import qdarkstyle
@@ -10,12 +13,14 @@ import sys
 
 
 class BaseEditor(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, read_only=False):
         QWidget.__init__(self, parent=parent)
         add_diff()
         self.edit_frame = QHBoxLayout()
-        self.text = QTextEdit(self)
-        PygmentsHighlighter(self.text).set_style(get_configs()['highlight_style'])
+        self.file_name = ""
+        self.text = QTextBrowser(self) if read_only else QTextEdit()
+        self.text_cursor = self.text.textCursor()
+        PygmentsHighlighter(self.text).rehighlight()
         self.get_start()
 
     def get_start(self):
@@ -29,6 +34,18 @@ class BaseEditor(QWidget):
     def open(self, file_name: str):
         with open(file_name, encoding=get_configs()['default_file_encoding']) as f:
             self.text.setPlainText(f.read())
+        self.file_name = file_name
+        self.setWindowTitle(file_name)
+
+    def save_file(self, file_name: str):
+        try:
+            with open(file_name, 'w', encoding=get_configs()['default_file_encoding']) as f:
+                f.write(self.text.toPlainText())
+        except PermissionError:
+            QMessageBox.critical(self, '错误', '无权利访问文件。', QMessageBox.Ok)
+        else:
+            self.file_name = file_name
+        self.setWindowTitle(file_name)
 
     def autopep8_fix_code(self):
         text = autopep8.fix_code(self.text.toPlainText())

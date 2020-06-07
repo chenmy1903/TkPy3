@@ -1,6 +1,8 @@
 # -*- coding: UTF-8 -*-
 import os
 import sys
+import traceback
+
 import qdarkstyle
 
 from PyQt5 import QtGui
@@ -20,7 +22,6 @@ class MainWindow(QMainWindow):
         add_diff()
         self.not_save_list = []
         self.setWindowTitle(get_configs()['init_title'])
-        self.setWindowIcon(QIcon(get_configs()['init_icon_path']))
         self.tools_bar = self.addToolBar('')
         self.tip = QStatusBar()
         self.setStatusBar(self.tip)
@@ -75,18 +76,26 @@ class MainWindow(QMainWindow):
         saveas.setStatusTip('另存为文件')
         saveas.setShortcut('Ctrl+Shift+S')
         self.FileMenu.addSeparator()
-        close_all_files = self.FileMenu.addAction(
-            QIcon(os.path.join(images_icon_dir, 'editor_icons', "filecloseall.png")),
-            '关闭所有窗口')
-        close_all_files.setStatusTip('关闭所有窗口')
+        close_window = self.FileMenu.addAction(QIcon(os.path.join(images_icon_dir, 'editor_icons', 'fileclose.png')),
+                                               '退出TkPy3')
+        close_window.setShortcut('Ctrl+Q')
+        close_window.setStatusTip('退出TkPy3主窗口')
         # --------------------------------------------------------------
         sort_windows = self.ViewMenu.addAction('排列子窗口')
+        self.ViewMenu.addSeparator()
         sort_windows.setStatusTip('排列所有打开的内部主窗口')
+        close_all_files = self.ViewMenu.addAction(
+            QIcon(os.path.join(images_icon_dir, 'editor_icons', "filecloseall.png")),
+            '关闭所有子窗口')
+        close_all_files.setStatusTip('关闭所有子窗口')
         # --------------------------------------------------------------
         config_tkpy3 = self.TermMenu.addAction(QIcon(os.path.join(images_icon_dir, 'config_icons', 'advanced.png')),
                                                '设置')
         config_tkpy3.setStatusTip('设置TkPy3')
         # --------------------------------------------------------------
+        format_code = self.EditMenu.addAction('格式化代码')
+        format_code.setShortcut('Ctrl+Alt+L')
+        format_code.setStatusTip('使用AutoPEP8格式化代码')
 
     def MenuEvents(self, event):
         if event.text() == '新建':
@@ -99,6 +108,22 @@ class MainWindow(QMainWindow):
             self.windows_mdi.tileSubWindows()
         elif event.text() == '设置':
             self.open_config_dialog_window()
+        elif event.text() == '退出TkPy3':
+            res = QMessageBox.question(self, 'TkPy3 - 问题', '是否退出TkPy3?',
+                                       QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if res == QMessageBox.Yes:
+                self.close()
+        elif event.text() == '格式化代码':
+            self.windows_mdi.activeSubWindow().widget().autopep8_fix_code()
+        elif event.text() in ['保存', '另存为']:
+            window = self.windows_mdi.activeSubWindow()
+            widget = window.widget()
+            if widget.file_name and event.text() != '另存为':
+                file_name, ok = widget.file_name, True
+            else:
+                file_name, ok = QFileDialog.getSaveFileName(self, event.text(), '', 'Python 源文件 (*.py *.pyw)')
+            if ok:
+                widget.save_file(file_name)
 
     def open_file(self):
         file_name, ok = QFileDialog.getOpenFileName(self, '打开文件', '', 'Python 源文件 (*.py *.pyw)')
@@ -141,16 +166,34 @@ class MainWindow(QMainWindow):
     def save_files(self):
         pass
 
+    def show_error_and_exit(self):
+        sys.last_type, sys.last_value, last_tb = ei = sys.exc_info()
+        sys.last_traceback = last_tb
+        try:
+            lines = traceback.format_exception(ei[0], ei[1], last_tb.tb_next)
+            if sys.excepthook is sys.__excepthook__:
+                error_message = ''.join(lines)
+            else:
+                sys.excepthook(ei[0], ei[1], last_tb)
+        finally:
+            last_tb = ei = None
+        QMessageBox.critical(self, '错误', f'TkPy3出现严重错误，需要退出。\n错误：\n\n{error_message}')
+        self.close()
+
 
 def main():
     app = QApplication(sys.argv)
     if get_configs()['open_dark_style']:
         style = qdarkstyle.load_stylesheet_pyqt5()
         app.setStyleSheet(style)
+    app.setWindowIcon(QIcon(get_configs()['init_icon_path']))
     widget = MainWindow()
     widget.show()
     sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        main()
+    except Exception:
+        MainWindow().show_error_and_exit()

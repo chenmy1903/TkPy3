@@ -1,5 +1,8 @@
 # -*- coding: UTF-8 -*-
-from PyQt5 import QtGui
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QTextCursor
+from PyQt5.QtWidgets import QCompleter, QTextEdit, QPlainTextEdit
 from ipython_genutils.py3compat import PY3, string_types
 from diff_match_patch import diff_match_patch
 from pygments.formatters.html import HtmlFormatter
@@ -7,6 +10,8 @@ from pygments.lexers.python import Python3Lexer, PythonLexer
 from pygments.styles import get_style_by_name
 from qtconsole.pygments_highlighter import PygmentsBlockUserData
 from qtconsole.qstringhelpers import qstring_length
+
+from TkPy3 import get_configs
 
 
 def assert_text(old_text, new_text):
@@ -28,10 +33,9 @@ class PygmentsHighlighter(QtGui.QSyntaxHighlighter):
 
     def __init__(self, parent, lexer=None):
         super(PygmentsHighlighter, self).__init__(parent)
-
         self._document = self.document()
         self._formatter = HtmlFormatter(nowrap=True)
-        self.set_style('default')
+        self.set_style(get_configs()['highlight_style'])
         if lexer is not None:
             self._lexer = lexer
         else:
