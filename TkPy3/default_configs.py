@@ -15,8 +15,7 @@ configs = {
     'default_file_encoding': 'UTF-8',
     'auto_save': False,
     'highlight_style': 'default',
-    'open_dark_style': True,
-    'tab_width': 4
+    'tab_width': 4,
 }
 
 

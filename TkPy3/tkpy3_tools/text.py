@@ -10,6 +10,7 @@ from pygments.lexers.python import Python3Lexer, PythonLexer
 from pygments.styles import get_style_by_name
 from qtconsole.pygments_highlighter import PygmentsBlockUserData
 from qtconsole.qstringhelpers import qstring_length
+import pyperclip
 
 from TkPy3 import get_configs
 
@@ -166,3 +167,13 @@ class PygmentsHighlighter(QtGui.QSyntaxHighlighter):
                       int(color[2:4], base=16),
                       int(color[4:6], base=16))
         return qcolor
+
+
+class TkPyTextEdit(QTextEdit):
+    def __init__(self, parent=None):
+        QTextEdit.__init__(self, parent)
+        self.highlighter = PygmentsHighlighter(self)
+
+    def insertFromMimeData(self, soc):
+        if soc.hasText():
+            self.textCursor().insertText(soc.text())  # 去除粘贴格式

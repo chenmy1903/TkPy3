@@ -4,10 +4,9 @@ from PyQt5.QtCore import QRect
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import *
 import autopep8
-from conda_build.os_utils.pyldd import fileview
 
 from TkPy3.default_configs import get_configs, add_diff
-from TkPy3.tkpy3_tools.text import PygmentsHighlighter
+from TkPy3.tkpy3_tools.text import TkPyTextEdit
 import qdarkstyle
 import sys
 
@@ -18,9 +17,8 @@ class BaseEditor(QWidget):
         add_diff()
         self.edit_frame = QHBoxLayout()
         self.file_name = ""
-        self.text = QTextBrowser(self) if read_only else QTextEdit()
+        self.text = QTextBrowser(self) if read_only else TkPyTextEdit()
         self.text_cursor = self.text.textCursor()
-        PygmentsHighlighter(self.text).rehighlight()
         self.get_start()
 
     def get_start(self):
@@ -50,6 +48,9 @@ class BaseEditor(QWidget):
     def autopep8_fix_code(self):
         text = autopep8.fix_code(self.text.toPlainText())
         self.text.setText(text)
+        
+    def run(self):
+        QMessageBox.information(self, 'TkPy测试', '运行')
 
 
 if __name__ == "__main__":

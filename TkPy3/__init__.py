@@ -1,11 +1,14 @@
 # -*- coding: UTF-8 -*-
 import os
+import platform
 import sys
+import textwrap
 import traceback
 
 import qdarkstyle
 
 from PyQt5 import QtGui
+from PyQt5.Qt import PYQT_VERSION_STR
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 
@@ -14,6 +17,8 @@ from TkPy3.tkpy3_tools.config_window import ConfigDialog
 from TkPy3.tkpy3_tools.editor import BaseEditor
 from TkPy3.tkpy3_tools.events import TkPyEventType
 from TkPy3.locale_dirs import BASE_DIR, images_icon_dir
+from TkPy3.tkpy3_tools.relys import RelyDialog
+from TkPy3.version import version as __version__
 
 
 class MainWindow(QMainWindow):
@@ -34,7 +39,7 @@ class MainWindow(QMainWindow):
         self.ViewMenu = self.Menu.addMenu('查看')
         self.GoToMenu = self.Menu.addMenu('转到')
         self.RunMenu = self.Menu.addMenu('运行')
-        self.TermMenu = self.Menu.addMenu('终端')
+        self.TerminalMenu = self.Menu.addMenu('终端')
         self.HelpMenu = self.Menu.addMenu('帮助')
         self.get_start()
 
@@ -89,13 +94,22 @@ class MainWindow(QMainWindow):
             '关闭所有子窗口')
         close_all_files.setStatusTip('关闭所有子窗口')
         # --------------------------------------------------------------
-        config_tkpy3 = self.TermMenu.addAction(QIcon(os.path.join(images_icon_dir, 'config_icons', 'advanced.png')),
-                                               '设置')
+        run = self.RunMenu.addAction(QIcon(os.path.join(images_icon_dir, 'editor_icons', 'run.png')),
+                                          '运行')
+        run.setShortcut('F5')
+        run.setStatusTip('运行代码')
+        # --------------------------------------------------------------
+        config_tkpy3 = self.TerminalMenu.addAction(QIcon(os.path.join(images_icon_dir, 'config_icons', 'advanced.png')),
+                                                   '设置')
         config_tkpy3.setStatusTip('设置TkPy3')
         # --------------------------------------------------------------
         format_code = self.EditMenu.addAction('格式化代码')
         format_code.setShortcut('Ctrl+Alt+L')
         format_code.setStatusTip('使用AutoPEP8格式化代码')
+        # --------------------------------------------------------------
+        self.HelpMenu.addAction('关于TkPy3').setStatusTip('关于TkPy3')
+        self.HelpMenu.addAction('TkPy3的依赖').setStatusTip('查看TkPy3的依赖')
+        # --------------------------------------------------------------
 
     def MenuEvents(self, event):
         if event.text() == '新建':
@@ -124,6 +138,21 @@ class MainWindow(QMainWindow):
                 file_name, ok = QFileDialog.getSaveFileName(self, event.text(), '', 'Python 源文件 (*.py *.pyw)')
             if ok:
                 widget.save_file(file_name)
+        elif event.text() == '关于TkPy3':
+            QMessageBox.information(self, '关于TkPy3', f"""TkPy3一个使用PyQt5制作的TkPy IDE
+TkPy3: {__version__}
+PyQt5: {PYQT_VERSION_STR}
+System:  {platform.system()}   
+                """)
+        elif event.text() == 'TkPy3的依赖':
+            dialog = RelyDialog()
+            dialog.exec_()
+        elif event.text() == '运行':
+            window = self.windows_mdi.activeSubWindow()
+            widget = window.widget()
+            self.MenuEvents(TkPyEventType('保存'))
+            if widget.file_name:
+                widget.run()
 
     def open_file(self):
         file_name, ok = QFileDialog.getOpenFileName(self, '打开文件', '', 'Python 源文件 (*.py *.pyw)')
@@ -143,7 +172,7 @@ class MainWindow(QMainWindow):
         sub.resize(700, 500)
         sub.setWindowTitle(get_configs()['new_file_title'] if not file_name else os.path.abspath(file_name))
         sub.setWindowIcon(QIcon(os.path.join(images_icon_dir, 'file_icons', 'py.ico')))
-        edit = BaseEditor()
+        edit = BaseEditor(sub)
         if file_name:
             edit.open(file_name)
         sub.setWidget(edit)
@@ -183,9 +212,6 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    if get_configs()['open_dark_style']:
-        style = qdarkstyle.load_stylesheet_pyqt5()
-        app.setStyleSheet(style)
     app.setWindowIcon(QIcon(get_configs()['init_icon_path']))
     widget = MainWindow()
     widget.show()
