@@ -2,7 +2,6 @@
 import os
 import sys
 import qdarkstyle
-import qtconsole
 
 from PyQt5 import QtGui
 from PyQt5.QtGui import QIcon
@@ -145,8 +144,9 @@ class MainWindow(QMainWindow):
 
 def main():
     app = QApplication(sys.argv)
-    style = qdarkstyle.load_stylesheet_pyqt5()
-    app.setStyleSheet(style)
+    if get_configs()['open_dark_style']:
+        style = qdarkstyle.load_stylesheet_pyqt5()
+        app.setStyleSheet(style)
     widget = MainWindow()
     widget.show()
     sys.exit(app.exec_())

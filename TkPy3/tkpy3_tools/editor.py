@@ -23,7 +23,7 @@ class BaseEditor(QWidget):
         self.text.setFont(QFont(get_configs()['font_name']))
         self.edit_frame.addWidget(self.text)
         self.text.setPlainText(get_configs()['init_text'])
-
+        self.text.setTabStopWidth(get_configs()['tab_width'] * 10)
         self.setLayout(self.edit_frame)
 
     def open(self, file_name: str):
