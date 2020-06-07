@@ -6,11 +6,15 @@ from TkPy3.tkpy3_tools.tkpy_file import tkpy_file, read_tkpy_file
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 configs = {
     'init_title': f'TkPy3 (Python {platform.python_version()})',
-    'init_text': '# -*- coding: UTF-8 -*-',
+    'init_text': '# -*- coding: UTF-8 -*-\n',
     'init_icon_path': os.path.join(BASE_DIR, 'images', 'icons', 'TkPy.bmp'),
     'text_wrap': False,
     'font_name': '黑体',
     'TkPy3_path': ['.'],
+    'new_file_title': 'Untitled',
+    'default_file_encoding': 'UTF-8',
+    'auto_save': False,
+    'highlight_style': 'default',
 }
 
 
