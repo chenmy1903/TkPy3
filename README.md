@@ -2,7 +2,7 @@
 
 ## 安装依赖
 ```commandline
-pip install PyQt5
+pip install PyQt5 -i https://pypi.doubanio.com/simple
 python -m TkPy3.tkpy3_tools.relys
 ```
 ## 运行TkPy3
