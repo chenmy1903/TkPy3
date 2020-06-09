@@ -2,6 +2,7 @@
 
 ## 安装依赖
 ```commandline
+pip install PyQt5
 python -m TkPy3.tkpy3_tools.relys
 ```
 ## 运行TkPy3

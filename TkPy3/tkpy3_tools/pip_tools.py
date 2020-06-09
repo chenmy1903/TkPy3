@@ -2,7 +2,10 @@
 from pip._internal.main import main as PipMain
 
 
-class tkpy_pip:
+class tkpy_pip(object):
+    def __init__(self):
+        object.__init__(self)
+
     def install(self, *packages):
         return PipMain(['install', *packages])
 
@@ -15,5 +18,5 @@ class tkpy_pip:
     def upgrade(self, *packages):
         return PipMain(['install', '--upgrade', *packages])
 
-    def exec_(self, *args):
+    def __call__(self, *args):
         return PipMain(args)
