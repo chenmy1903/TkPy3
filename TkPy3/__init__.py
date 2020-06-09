@@ -14,7 +14,7 @@ from TkPy3.tkpy3_tools.config_window import ConfigDialog
 from TkPy3.tkpy3_tools.editor import BaseEditor
 from TkPy3.tkpy3_tools.events import TkPyEventType
 from TkPy3.locale_dirs import BASE_DIR, images_icon_dir
-from TkPy3.tkpy3_tools.relys import RelyDialog
+from TkPy3.tkpy3_tools.relys import RelyDialog, InstallDialog
 from TkPy3.version import version as __version__
 
 
@@ -61,7 +61,8 @@ class MainWindow(QMainWindow):
 
     def add_menus(self):
         self.Menu.triggered[QAction].connect(self.MenuEvents)
-        new = self.FileMenu.addAction(QIcon(os.path.join(images_icon_dir, 'editor_icons', 'filenew.png')), '新建')
+        new = self.FileMenu.addAction(
+            QIcon(os.path.join(images_icon_dir, 'editor_icons', 'filenew.png')), '新建')
         new.setShortcut('Ctrl+N')
         new.setStatusTip('新建文件')
         open = self.FileMenu.addAction(
@@ -126,7 +127,9 @@ class MainWindow(QMainWindow):
         format_code.setStatusTip('使用AutoPEP8格式化代码')
         # --------------------------------------------------------------
         self.HelpMenu.addAction('关于TkPy3').setStatusTip('关于TkPy3')
-        self.HelpMenu.addAction('TkPy3的依赖').setStatusTip('查看TkPy3的依赖')
+        relyMenu = self.HelpMenu.addMenu('依赖管理')
+        relyMenu.addAction('TkPy3的依赖').setStatusTip('查看TkPy3的依赖')
+        relyMenu.addAction('安装TkPy3的所有依赖').setStatusTip('安装TkPy3的所有依赖')
         self.HelpMenu.addSeparator()
         self.HelpMenu.addAction('关于PyQt5').setStatusTip('关于PyQt5')
         # --------------------------------------------------------------
@@ -155,7 +158,8 @@ class MainWindow(QMainWindow):
             if widget.file_name and event.text() != '另存为':
                 file_name, ok = widget.file_name, True
             else:
-                file_name, ok = QFileDialog.getSaveFileName(self, event.text(), '', 'Python 源文件 (*.py *.pyw)')
+                file_name, ok = QFileDialog.getSaveFileName(
+                    self, event.text(), '', 'Python 源文件 (*.py *.pyw)')
             if ok:
                 widget.save_file(file_name)
         elif event.text() == '关于TkPy3':
@@ -166,6 +170,9 @@ System:  {platform.system()}
                 """)
         elif event.text() == 'TkPy3的依赖':
             dialog = RelyDialog()
+            dialog.exec_()
+        elif event.text() == '安装TkPy3的所有依赖':
+            dialog = InstallDialog()
             dialog.exec_()
         elif event.text() == '运行':
             window = self.windows_mdi.activeSubWindow()
@@ -207,7 +214,8 @@ System:  {platform.system()}
             QMessageBox.aboutQt(self, '关于PyQt5')
 
     def open_file(self):
-        file_name, ok = QFileDialog.getOpenFileName(self, '打开文件', '', 'Python 源文件 (*.py *.pyw)')
+        file_name, ok = QFileDialog.getOpenFileName(
+            self, '打开文件', '', 'Python 源文件 (*.py *.pyw)')
         if ok:
             self.add_editor_window(TkPyEventType(file_name))
 
@@ -222,8 +230,10 @@ System:  {platform.system()}
             file_name = event.text()
         sub = QMdiSubWindow()
         sub.resize(700, 500)
-        sub.setWindowTitle(get_configs()['new_file_title'] if not file_name else os.path.abspath(file_name))
-        sub.setWindowIcon(QIcon(os.path.join(images_icon_dir, 'file_icons', 'py.ico')))
+        sub.setWindowTitle(get_configs()[
+                           'new_file_title'] if not file_name else os.path.abspath(file_name))
+        sub.setWindowIcon(
+            QIcon(os.path.join(images_icon_dir, 'file_icons', 'py.ico')))
         edit = BaseEditor(sub)
         if file_name:
             edit.open(file_name)
@@ -258,7 +268,8 @@ System:  {platform.system()}
                 sys.excepthook(ei[0], ei[1], last_tb)
         finally:
             last_tb = ei = None
-        QMessageBox.critical(self, '错误', f'TkPy3出现严重错误，需要退出。\n错误：\n\n{error_message}')
+        QMessageBox.critical(
+            self, '错误', f'TkPy3出现严重错误，需要退出。\n错误：\n\n{error_message}')
         self.close()
 
 

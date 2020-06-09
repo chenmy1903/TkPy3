@@ -121,7 +121,6 @@ class InstallDialog(RelyDialog):
             return
         self.yesnoinstall = True
         install()
-        sys.exit()
 
 
 if __name__ == "__main__":
