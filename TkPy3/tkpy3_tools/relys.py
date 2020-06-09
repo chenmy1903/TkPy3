@@ -3,7 +3,7 @@ import sys
 import os
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import QThread, pyqtSignal
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 from TkPy3.version import version as tkpy_version
@@ -28,6 +28,7 @@ class InstallThread(QThread):
 class RelyDialog(QDialog):
     def __init__(self):
         QDialog.__init__(self)
+        self.resize(800, 400)
         self.setWindowTitle(f'TkPy{tkpy_version} 依赖')
         self.setWindowIcon(QIcon(os.path.join(images_icon_dir, 'help_icons', 'tools.png')))
         self.layout = QVBoxLayout(self)
@@ -86,26 +87,33 @@ class InstallDialog(RelyDialog):
 
     def install_relys(self):
         def install():
+            def done():
+                show_label.setText('<p>安装完成</p>')
+                exit_button.setDisabled(False)
+            dialog = QDialog()
+            dialog.resize(600, 200)
+            dialog.setWindowFlags(Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint)
+            dialog.setWindowTitle('TkPy3安装')
+            layout = QVBoxLayout()
+            title_label = QLabel()
+            show_label = QLabel()
+            exit_button = QPushButton()
+            title_label.setText('<h1>TkPy3安装</h1>')
+            show_label.setText('<p>正在安装中... ...</p>')
+            exit_button.setText('退出')
+            exit_button.setDisabled(True)
+            layout.addWidget(title_label)
+            layout.addWidget(show_label)
+            layout.addWidget(exit_button)
+            dialog.setLayout(layout)
             install_packages = []
             for i in range(self.view_list.count()):
                 install_packages.append(self.view_list.item(i).text())
 
             self.close()
-            dialog = QDialog()
-            dialog.setWindowTitle('安装中')
-            dialog.closeEvent = lambda event: None
-            layout = QVBoxLayout()
-            dialog.setLayout(layout)
-            view_label = QLabel()
-            view_label.setText('<h1>正在安装中... ...</h1>')
-            exit_button = QPushButton()
-            exit_button.setDisabled(True)
-            exit_button.clicked.connect(dialog.close)
-            exit_button.setText('退出')
-            layout.addWidget(view_label)
-            layout.addWidget(exit_button)
-            self.install_process.done.connect(lambda: exit_button.setDisabled(False))
             self.install_process.start()
+            exit_button.clicked.connect(dialog.close)
+            self.install_process.done.connect(done)
             dialog.exec_()
 
         res = QMessageBox.question(self, '问题', '是否现在安装所有依赖?')
@@ -113,6 +121,7 @@ class InstallDialog(RelyDialog):
             return
         self.yesnoinstall = True
         install()
+        sys.exit()
 
 
 if __name__ == "__main__":

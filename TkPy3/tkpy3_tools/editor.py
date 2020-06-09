@@ -20,6 +20,7 @@ class BaseEditor(QWidget):
     def get_start(self):
         self.text.setFont(QFont(get_configs()['font_name']))
         self.edit_frame.addWidget(self.text)
+        self.text.setText(get_configs()['init_text'])
         self.setLayout(self.edit_frame)
 
     def open(self, file_name: str):

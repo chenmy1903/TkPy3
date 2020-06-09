@@ -127,6 +127,8 @@ class MainWindow(QMainWindow):
         # --------------------------------------------------------------
         self.HelpMenu.addAction('关于TkPy3').setStatusTip('关于TkPy3')
         self.HelpMenu.addAction('TkPy3的依赖').setStatusTip('查看TkPy3的依赖')
+        self.HelpMenu.addSeparator()
+        self.HelpMenu.addAction('关于PyQt5').setStatusTip('关于PyQt5')
         # --------------------------------------------------------------
 
     def MenuEvents(self, event):
@@ -201,6 +203,8 @@ System:  {platform.system()}
             widget = window.widget()
             text = widget.text
             text.selectAll()
+        elif event.text() == '关于PyQt5':
+            QMessageBox.aboutQt(self, '关于PyQt5')
 
     def open_file(self):
         file_name, ok = QFileDialog.getOpenFileName(self, '打开文件', '', 'Python 源文件 (*.py *.pyw)')
