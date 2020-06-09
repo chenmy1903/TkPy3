@@ -2,8 +2,8 @@
 import platform
 import os
 from TkPy3.tkpy3_tools.tkpy_file import tkpy_file, read_tkpy_file
+from TkPy3.locale_dirs import BASE_DIR
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 configs = {
     'init_title': f'TkPy3 (Python {platform.python_version()})',
     'init_text': '# -*- coding: UTF-8 -*-\n',
@@ -14,8 +14,12 @@ configs = {
     'new_file_title': 'Untitled',
     'default_file_encoding': 'UTF-8',
     'auto_save': False,
-    'highlight_style': 'default',
+    'highlight_style': 'tango',
     'tab_width': 4,
+    'line_background_color': '#1f0000ff',
+    'eol_mode': 'Unix',
+    'indent_with_tabs': False,
+    'cursor_color': '#ff0000ff',
 }
 
 
@@ -35,8 +39,6 @@ def add_diff():
     f_text = f.read()
     for key, value in configs.items():
         if key not in f_text:
-            f.add(key, value)
-        elif f_text[key] != value:
             f.add(key, value)
 
 

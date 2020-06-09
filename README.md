@@ -2,7 +2,7 @@
 
 ## 安装依赖
 ```commandline
-pip install PyQt5 pygments pickleshare autopep8 qdarkstyle
+python -m TkPy3.tkpy3_tools.relys
 ```
 ## 运行TkPy3
 > 如果已安装TkPy3

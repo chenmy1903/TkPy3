@@ -2,10 +2,7 @@
 import os
 import platform
 import sys
-import textwrap
 import traceback
-
-import qdarkstyle
 
 from PyQt5 import QtGui
 from PyQt5.Qt import PYQT_VERSION_STR
@@ -95,7 +92,7 @@ class MainWindow(QMainWindow):
         close_all_files.setStatusTip('关闭所有子窗口')
         # --------------------------------------------------------------
         run = self.RunMenu.addAction(QIcon(os.path.join(images_icon_dir, 'editor_icons', 'run.png')),
-                                          '运行')
+                                     '运行')
         run.setShortcut('F5')
         run.setStatusTip('运行代码')
         # --------------------------------------------------------------
@@ -103,6 +100,27 @@ class MainWindow(QMainWindow):
                                                    '设置')
         config_tkpy3.setStatusTip('设置TkPy3')
         # --------------------------------------------------------------
+        select_all = self.SelectMenu.addAction('选择全部')
+        select_all.setStatusTip('选择全部文字')
+        select_all.setShortcut('Ctrl+A')
+        # --------------------------------------------------------------
+        paste = self.EditMenu.addAction('粘贴')
+        paste.setShortcut('Ctrl+V')
+        paste.setStatusTip('粘贴')
+        paste = self.EditMenu.addAction('复制')
+        paste.setShortcut('Ctrl+C')
+        paste.setStatusTip('复制选中的文字')
+        paste = self.EditMenu.addAction('剪切')
+        paste.setShortcut('Ctrl+X')
+        paste.setStatusTip('剪切选中的文字')
+        self.EditMenu.addSeparator()
+        undo = self.EditMenu.addAction('撤销')
+        undo.setShortcut('Ctrl+Z')
+        undo.setStatusTip('撤销上一个操作')
+        redo = self.EditMenu.addAction('撤销')
+        redo.setShortcut('Ctrl+Y')
+        redo.setStatusTip('撤回上一个操作')
+        self.EditMenu.addSeparator()
         format_code = self.EditMenu.addAction('格式化代码')
         format_code.setShortcut('Ctrl+Alt+L')
         format_code.setStatusTip('使用AutoPEP8格式化代码')
@@ -153,6 +171,36 @@ System:  {platform.system()}
             self.MenuEvents(TkPyEventType('保存'))
             if widget.file_name:
                 widget.run()
+        elif event.text() == '粘贴':
+            window = self.windows_mdi.activeSubWindow()
+            widget = window.widget()
+            text = widget.text
+            text.paste()
+        elif event.text() == '复制':
+            window = self.windows_mdi.activeSubWindow()
+            widget = window.widget()
+            text = widget.text
+            text.copy()
+        elif event.text() == '剪切':
+            window = self.windows_mdi.activeSubWindow()
+            widget = window.widget()
+            text = widget.text
+            text.cut()
+        elif event.text() == '撤销':
+            window = self.windows_mdi.activeSubWindow()
+            widget = window.widget()
+            text = widget.text
+            text.undo()
+        elif event.text() == '撤回':
+            window = self.windows_mdi.activeSubWindow()
+            widget = window.widget()
+            text = widget.text
+            text.redo()
+        elif event.text() == '选择全部':
+            window = self.windows_mdi.activeSubWindow()
+            widget = window.widget()
+            text = widget.text
+            text.selectAll()
 
     def open_file(self):
         file_name, ok = QFileDialog.getOpenFileName(self, '打开文件', '', 'Python 源文件 (*.py *.pyw)')

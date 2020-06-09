@@ -5,7 +5,7 @@ import sys
 from PyQt5.QtGui import QIcon
 
 from TkPy3.default_configs import add_config, get_configs
-from TkPy3 import BASE_DIR
+from TkPy3.locale_dirs import BASE_DIR
 from PyQt5.QtWidgets import *
 
 

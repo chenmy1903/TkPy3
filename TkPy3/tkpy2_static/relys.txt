@@ -1,0 +1,8 @@
+pygments
+PyQt5
+pip
+pickleshare
+autopep8
+qscintilla
+diff_match_patch
+
