@@ -5,4 +5,10 @@ pickleshare
 autopep8
 qscintilla
 diff_match_patch
+jedi==0.15.2
+uvicorn
+FastAPI
+jinja2
+markdown2
+qtconsole
 
