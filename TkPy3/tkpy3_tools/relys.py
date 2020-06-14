@@ -11,6 +11,7 @@ from TkPy3.tkpy3_tools.pip_tools import tkpy_pip
 from TkPy3.locale_dirs import images_icon_dir, static_dir
 
 
+
 class InstallThread(QThread):
     done = pyqtSignal()
 

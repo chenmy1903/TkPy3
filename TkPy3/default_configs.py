@@ -20,6 +20,11 @@ configs = {
     'eol_mode': 'Unix',
     'indent_with_tabs': False,
     'cursor_color': '#ff0000ff',
+    'permanent_activation_codes': ['ANBC-9BDG-MPTY-TUYD'],
+    'activate_codes': [],
+    'is_activate': False,
+    'end_activate_day': False,
+    'input_activate_code': '',
 }
 
 
