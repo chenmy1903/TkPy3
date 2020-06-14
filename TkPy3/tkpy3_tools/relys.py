@@ -3,12 +3,17 @@ import sys
 import os
 
 from PyQt5 import QtGui
-from PyQt5.QtCore import QThread, pyqtSignal, Qt
+from PyQt5.QtCore import QThread, pyqtSignal, Qt, QObject
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 from TkPy3.version import version as tkpy_version
 from TkPy3.tkpy3_tools.pip_tools import tkpy_pip
 from TkPy3.locale_dirs import images_icon_dir, static_dir
+
+class Output:
+    output = pyqtSignal(str)
+    def write(self, text: str):
+        output.emit(text)
 
 
 class InstallThread(QThread):
@@ -20,6 +25,7 @@ class InstallThread(QThread):
     def __init__(self, parent=None, *packages):
         QThread.__init__(self, parent)
         self.packages = packages
+        self.output = Output()
 
     def run(self):
         pip = tkpy_pip()

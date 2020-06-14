@@ -90,7 +90,7 @@ class Player(pygame.sprite.Sprite):
             self.image = self.images[0]
         elif direction > 0:
             self.image = self.images[1]
-        self.rect.top = self.origtop - (self.rect.left//self.bounce % 2)
+        self.rect.top = self.origtop - (self.rect.left // self.bounce % 2)
 
     def gunpos(self):
         pos = self.facing*self.gun_offset + self.rect.centerx
@@ -118,7 +118,7 @@ class Alien(pygame.sprite.Sprite):
             self.rect.top = self.rect.bottom + 1
             self.rect = self.rect.clamp(SCREENRECT)
         self.frame = self.frame + 1
-        self.image = self.images[self.frame//self.animcycle % 3]
+        self.image = self.images[self.frame // self.animcycle % 3]
 
 
 class Explosion(pygame.sprite.Sprite):
@@ -216,7 +216,7 @@ def run_activate_game(winstyle=0):
     # decorate the game window
     icon = pygame.transform.scale(Alien.images[0], (32, 32))
     pygame.display.set_icon(icon)
-    pygame.display.set_caption('Pygame Aliens')
+    pygame.display.set_caption('TkPy3游戏 | 飞船大战')
     pygame.mouse.set_visible(0)
 
     # create the background, tile the bgd image
@@ -271,8 +271,6 @@ def run_activate_game(winstyle=0):
                     (event.type == KEYDOWN and event.key == K_ESCAPE):
                 pygame.quit()
                 return SCORE
-            elif event.type == KEYDOWN:
-                pass
 
         keystate = pygame.key.get_pressed()
 

@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
-from pip._internal.main import main as PipMain
+import sys
+import os
 
 
 class tkpy_pip(object):
@@ -7,16 +8,16 @@ class tkpy_pip(object):
         object.__init__(self)
 
     def install(self, *packages):
-        return PipMain(['install', *packages])
+        return os.system(f'{sys.executable} -m pip install {" ".join(packages)}')
 
     def uninstall(self, *packages):
-        return PipMain(['uninstall', *packages, '-y'])
+        return os.system(f'{sys.executable} -m pip uninstall {" ".join(packages)} -y')
 
     def force_reinstall(self, *packages):
-        return PipMain(['install', *packages, '--force-reinstall'])
+        return os.system(f'{sys.executable} -m pip install {" ".join(packages)} --force-reinstall')
 
     def upgrade(self, *packages):
-        return PipMain(['install', '--upgrade', *packages])
+        return os.system(f'{sys.executable} -m pip install {" ".join(packages)} --upgrade')
 
     def __call__(self, *args):
-        return PipMain(args)
+        return os.system(f'{sys.executable} -m pip {" ".join(args)}')
