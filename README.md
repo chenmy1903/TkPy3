@@ -1,9 +1,13 @@
 # TkPy3一个升级版的TkPy IDE
-
+# 安装TkPy3:
+```
+pip install tkpy3
+```
 
 ## 安装依赖
 ```
-pip install PyQt5 -i https://pypi.doubanio.com/simple
+
+pip install PyQt5
 python -m TkPy3.tkpy3_tools.relys
 ```
 ## 运行TkPy3
@@ -19,9 +23,16 @@ python run_code.py
 > ## 注意: 不要用IDLE运行
 
 # 版本记录
+#### 3.6.81
+<pre>
+增加了序列号功能
+加入Windows 10加载动画 (未开放)
+对编辑器的体验增加了完善
+</pre>
 #### 3.6.8
 <pre>
 修复pip在安装时的Bug
+更新了在PyPi上上传的Bug
 </pre>
 #### 3.6.7
 <pre>

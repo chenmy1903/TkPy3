@@ -6,11 +6,11 @@ import traceback
 
 from PyQt5 import QtGui
 from PyQt5.Qt import PYQT_VERSION_STR
-from PyQt5.QtCore import QModelIndex, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 
 from TkPy3.default_configs import add_config, add_diff, get_configs
+from TkPy3.tkpy3_tools.start import setup as tkpy3_setup
 from TkPy3.tkpy3_tools.config_window import ConfigDialog
 from TkPy3.tkpy3_tools.editor import BaseEditor
 from TkPy3.tkpy3_tools.events import TkPyEventType
@@ -19,17 +19,19 @@ from TkPy3.tkpy3_tools.relys import RelyDialog, InstallDialog
 from TkPy3.tkpy3_tools.markdown_tools import PyQt5MarkdownDialog
 from TkPy3.version import version as __version__
 from TkPy3.tkpy3_tools.errors import TkPyIdeError, TkPyQtError
-from TkPy3.tkpy3_tools.activate import ActivateDialog, random_activation_codes
+from TkPy3.tkpy3_tools.activate import ActivateDialog
+from TkPy3.tkpy3_tools.activate_game import random_activation_codes
 from TkPy3.tkpy3_tools.report import BugReportWindow, NewFunctionReportWindow
 from TkPy3.tkpy3_tools.pyshell import TkPyShell
 import time
 import datetime
 
+
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         QMainWindow.__init__(self, parent)
         add_diff()
-        # self.assert_activate()
+        self.assert_activate()
         self.not_save_list = []
         self.setWindowTitle(get_configs()['init_title'])
         self.tools_bar = self.addToolBar('')
@@ -76,10 +78,10 @@ class MainWindow(QMainWindow):
                 if add_config('end_activate_day', None) is not None:
                     add_config('end_activate_day', datetime.date.today(
                     ) + datetime.timedelta(days=30))
-        elif get_configs()['end_activate_day'] >= datetime.date.today():
-            add_config('is_activate', False)
-            self.assert_activate()
-            random_activation_codes()
+        # elif get_configs()['end_activate_day'] >= datetime.date.today():
+        #    add_config('is_activate', False)
+        #    self.assert_activate()
+        #    random_activation_codes()
 
     def open_activate_window(self):
         ActivateDialog().exec_()
@@ -121,8 +123,9 @@ class MainWindow(QMainWindow):
                                                '退出TkPy3')
         close_window.setShortcut('Ctrl+Q')
         close_window.setStatusTip('退出TkPy3主窗口')
-        close_window = self.FileMenu.addAction(QIcon(os.path.join(images_icon_dir, 'editor_icons', 'restart_window.jpg')),
-                                               '重启TkPy3')
+        close_window = self.FileMenu.addAction(
+            QIcon(os.path.join(images_icon_dir, 'editor_icons', 'restart_window.jpg')),
+            '重启TkPy3')
         close_window.setShortcut('Ctrl+Shift+R')
         close_window.setStatusTip('重启TkPy3')
         # --------------------------------------------------------------
@@ -140,7 +143,8 @@ class MainWindow(QMainWindow):
         run.setStatusTip('运行代码')
         # --------------------------------------------------------------
         self.TerminalMenu.addAction(QIcon(
-            os.path.join(images_icon_dir, 'shell_icons', 'pyshell.ico')), '打开Python Shell').setStatusTip('打开Python Shell')
+            os.path.join(images_icon_dir, 'shell_icons', 'pyshell.ico')), '打开Python Shell').setStatusTip(
+            '打开Python Shell')
         self.TerminalMenu.addSeparator()
         config_tkpy3 = self.TerminalMenu.addAction(QIcon(os.path.join(images_icon_dir, 'config_icons', 'advanced.png')),
                                                    '设置')
@@ -291,7 +295,16 @@ System:  {platform.system()}
             self.add_editor_window(TkPyEventType(file_name))
 
     def window_mdi_activate_is_pyshell(self):
+        if not self.window_mdi_activate_is_not_none():
+            return True
         return isinstance(self.windows_mdi.activeSubWindow().widget(), TkPyShell)
+
+    def window_mdi_activate_is_not_none(self):
+        try:
+            getattr(self.windows_mdi.activeSubWindow(), 'widget')
+        except Exception:
+            return False
+        return True
 
     def open_config_dialog_window(self):
         dialog = ConfigDialog()
@@ -305,7 +318,7 @@ System:  {platform.system()}
         sub = QMdiSubWindow()
         sub.resize(700, 500)
         sub.setWindowTitle(get_configs()[
-                           'new_file_title'] if not file_name else os.path.abspath(file_name))
+                               'new_file_title'] if not file_name else os.path.abspath(file_name))
         sub.setWindowIcon(
             QIcon(os.path.join(images_icon_dir, 'file_icons', 'py.ico')))
         edit = BaseEditor(sub)
@@ -333,7 +346,17 @@ System:  {platform.system()}
                 event.ignore()
 
     def save_files(self):
-        pass
+        for window in self.windows_mdi.subWindowList():
+            widget = window.widget()
+            widget.save_file()
+
+    def save_open_windows(self):
+        file_names = []
+        for window in self.windows_mdi.subWindowList():
+            widget = window.widget()
+            if widget.file_name:
+                file_names.append(widget.file_name)
+        print(file_names)
 
     def show_error_and_exit(self):
         sys.last_type, sys.last_value, last_tb = ei = sys.exc_info()
@@ -348,7 +371,7 @@ System:  {platform.system()}
             last_tb = ei = None
         QMessageBox.critical(
             self, '错误', f'TkPy3出现严重错误，需要退出。\n错误：\n\n{error_message}')
-        sys.exit(object(1))
+        sys.exit(1)
 
     def restart_window(self):
         res = QMessageBox.question(self, '问题', '是否重启TkPy3')
@@ -359,12 +382,13 @@ System:  {platform.system()}
 
 def main():
     app = QApplication(sys.argv)
-    app.setWindowIcon(QIcon(get_configs()['init_icon_path']))
+    tkpy3_setup(app)
     widget = MainWindow()
     widget.show()
     return_code = app.exec_()
     if return_code:
         raise TkPyQtError('TkPy3在运行中出现错误。') from None
+    
     return return_code
 
 

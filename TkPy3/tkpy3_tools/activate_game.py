@@ -1,17 +1,35 @@
 import os.path
 import pygame
 import random
-import sys
 from pygame.locals import *
 
-from TkPy3.default_configs import get_configs
+from TkPy3.default_configs import get_configs, add_config
 from TkPy3.locale_dirs import BASE_DIR
+
+
+def get_one_activate_code():
+    code = ''
+    chars = list('QWERTYUIOPASDFGHJKLZCVBNM')
+    for i in range(4):
+        for i in range(4):
+            code += random.choice(chars)
+        code += '-'
+    return code[0:-1]
+
+
+def random_activation_codes():
+    codes = []
+    for i in range(5):
+        codes.append(get_one_activate_code())
+    add_config('activate_codes', codes)
+
+
 activation_codes = get_configs()['activate_codes']
-return_activation_code = random.choice(activation_codes)
+if activation_codes:
+    return_activation_code = random.choice(activation_codes)
 
 if not pygame.image.get_extended():
     raise SystemExit("Sorry, extended image module required")
-
 
 # game constants
 MAX_SHOTS = 2  # most player bullets onscreen
@@ -84,7 +102,7 @@ class Player(pygame.sprite.Sprite):
     def move(self, direction):
         if direction:
             self.facing = direction
-        self.rect.move_ip(direction*self.speed, 0)
+        self.rect.move_ip(direction * self.speed, 0)
         self.rect = self.rect.clamp(SCREENRECT)
         if direction < 0:
             self.image = self.images[0]
@@ -93,7 +111,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.top = self.origtop - (self.rect.left // self.bounce % 2)
 
     def gunpos(self):
-        pos = self.facing*self.gun_offset + self.rect.centerx
+        pos = self.facing * self.gun_offset + self.rect.centerx
         return pos, self.rect.top
 
 
@@ -134,7 +152,7 @@ class Explosion(pygame.sprite.Sprite):
 
     def update(self):
         self.life = self.life - 1
-        self.image = self.images[self.life//self.animcycle % 2]
+        self.image = self.images[self.life // self.animcycle % 2]
         if self.life <= 0:
             self.kill()
 

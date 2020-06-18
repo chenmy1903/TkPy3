@@ -9,11 +9,7 @@ from PyQt5.QtWidgets import *
 from TkPy3.version import version as tkpy_version
 from TkPy3.tkpy3_tools.pip_tools import tkpy_pip
 from TkPy3.locale_dirs import images_icon_dir, static_dir
-
-class Output:
-    output = pyqtSignal(str)
-    def write(self, text: str):
-        output.emit(text)
+from TkPy3.tkpy3_tools.qt_load import LoadWidget
 
 
 class InstallThread(QThread):
@@ -25,7 +21,6 @@ class InstallThread(QThread):
     def __init__(self, parent=None, *packages):
         QThread.__init__(self, parent)
         self.packages = packages
-        self.output = Output()
 
     def run(self):
         pip = tkpy_pip()
@@ -107,7 +102,7 @@ class InstallDialog(RelyDialog):
                 exit_button.setDisabled(False)
                 message.append('安装完成。')
             dialog = QDialog()
-            dialog.resize(600, 200)
+            dialog.resize(600, 600)
             dialog.setWindowFlags(Qt.WindowStaysOnTopHint |
                                   Qt.FramelessWindowHint)
             dialog.setWindowTitle('TkPy3安装')
@@ -116,13 +111,15 @@ class InstallDialog(RelyDialog):
             show_label = QLabel()
             message = QTextBrowser()
             exit_button = QPushButton()
+            load_processbar = LoadWidget()
             title_label.setText('<h1>TkPy3安装</h1>')
             exit_button.setText('退出')
             exit_button.setDisabled(True)
-            layout.addWidget(title_label)
+            layout.addWidget(title_label, 0)
             layout.addWidget(show_label)
             layout.addWidget(message)
             layout.addWidget(exit_button)
+            message.addAction(QAction(load_processbar))
             dialog.setLayout(layout)
             install_packages = []
             for i in range(self.view_list.count()):

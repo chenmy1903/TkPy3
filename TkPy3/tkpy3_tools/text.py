@@ -1,12 +1,17 @@
 # -*- coding: UTF-8 -*-
+import os
+import sys
+
+import jedi
 from PyQt5.Qsci import QsciAPIs, QsciLexerPython, QsciScintilla
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import pyqtSignal, Qt, QThread
+from PyQt5.QtPrintSupport import QPrintDialog
+from PyQt5.QtWidgets import QApplication
 from diff_match_patch import diff_match_patch
 
-import jedi
-
 from TkPy3 import get_configs
+from TkPy3.locale_dirs import PYQT5_PATH
 
 
 def assert_text(old_text, new_text):
@@ -20,11 +25,12 @@ def assert_text(old_text, new_text):
 
 
 class AutoComplete(QThread):
-    prepare = pyqtSignal(list)
-    started = False
+    prepare = pyqtSignal(list, tuple)
+    started: bool = False
     line: int
     column: int
     text: str
+
     def run(self):
         completions = []
         self.started = True
@@ -38,6 +44,7 @@ class AutoComplete(QThread):
                 completions.append(completion.name)
         self.prepare.emit(completions)
         self.started = False
+
 
 def get_eol_mode(mode: str):
     mode = mode.lower()
@@ -59,6 +66,7 @@ class TkPyTextEdit(QsciScintilla):
         self.lexer = QsciLexerPython(self)
         self.setLexer(self.lexer)
         self.api = QsciAPIs(self.lexer)
+        self.api.load(os.path.join(PYQT5_PATH, "Qt/qsci/api/python/PyQt5.api"))
         self.setAutoIndent(True)
         self.setMarginLineNumbers(0, True)
         self.setEdgeMode(QsciScintilla.EdgeLine)
@@ -78,22 +86,30 @@ class TkPyTextEdit(QsciScintilla):
         self.setWrapMode(QsciScintilla.WrapNone if not get_configs()['text_wrap'] else QsciScintilla.WrapWhitespace)
         self.setEolMode(get_eol_mode(get_configs()['eol_mode']))
         # self.setMarginsForegroundColor(QColor("#ff888888"))
-        self.setUtf8(True)"""
+        """
         self.setMarginWidth(0, len(str(len(self.text().split('\n')))) * 20)
         self.setFolding(QsciScintilla.PlainFoldStyle)
         self.setAutoCompletionSource(QsciScintilla.AcsAll)
         self.setAutoCompletionCaseSensitivity(True)
         self.setAutoCompletionReplaceWord(True)
+        self.autoCompleteFromDocument()
         self.setAutoCompletionThreshold(1)
+        self.setAutoCompletionSource(QsciScintilla.AcsAll)
+        self.setUtf8(True)
+        self.setCallTipsVisible(-1)
 
     def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Space:
+            if QApplication.keyboardModifiers() == Qt.ControlModifier:
+                self.autoCompleteFromDocument()
+                return
         QsciScintilla.keyPressEvent(self, event)
         self.complete.line, self.complete.column = self.getCursorPosition()
         self.complete.text = self.text()
         self.setMarginWidth(0, len(str(len(self.text().split('\n')))) * 20)
-        if event.key() not in [Qt.Key_Up, Qt.Key_Down, Qt.Key_Return]:
-            if not self.complete.started:
-                self.complete.start()
+        # if event.key() not in [Qt.Key_Up, Qt.Key_Down, Qt.Key_Left, Qt.Key_Right]:
+        #    if not self.complete.started:
+        #        self.complete.start()
         self.key_pressed.emit()
 
     def paste(self):
@@ -110,4 +126,12 @@ class TkPyTextEdit(QsciScintilla):
         for complete in completes:
             self.api.add(complete)
         self.api.prepare()
-        self.autoCompleteFromAll()
+
+
+if __name__ == "__main__":
+    app = QApplication([])
+    widget = TkPyTextEdit()
+    widget.resize(800, 600)
+    widget.setWindowTitle('TkPy3 Test')
+    widget.show()
+    sys.exit(app.exec_())

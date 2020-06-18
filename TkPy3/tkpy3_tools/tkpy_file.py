@@ -5,7 +5,7 @@ from typing import Union
 config_path = '~/.tkpy/.tkpy3/'
 
 
-class tkpy_file(object):
+class tkpy_file:
     def __init__(self, file_name: str, config: Union[list, dict], path: str = config_path):
         object.__init__(self)
         self.file_name: str = file_name

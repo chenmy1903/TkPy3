@@ -4,6 +4,8 @@ import os
 from TkPy3.tkpy3_tools.tkpy_file import tkpy_file, read_tkpy_file
 from TkPy3.locale_dirs import BASE_DIR
 
+events = {}
+
 configs = {
     'init_title': f'TkPy3 (Python {platform.python_version()})',
     'init_text': '# -*- coding: UTF-8 -*-\n',
@@ -20,11 +22,12 @@ configs = {
     'eol_mode': 'Unix',
     'indent_with_tabs': False,
     'cursor_color': '#ff0000ff',
-    'permanent_activation_codes': ['ANBC-9BDG-MPTY-TUYD'],
+    'permanent_activation_codes': ['ANBC-NBDG-MPTY-TUYD'],
     'activate_codes': [],
     'is_activate': False,
     'end_activate_day': False,
-    'input_activate_code': '',
+    'events': events,
+    'window_style': 'Windows',  # ['windowsvista', 'Windows', 'Fusion']
 }
 
 
