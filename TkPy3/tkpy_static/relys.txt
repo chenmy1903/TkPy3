@@ -9,6 +9,6 @@ jedi==0.15.2
 uvicorn
 FastAPI
 jinja2
-markdown2
+markdown
 qtconsole
 

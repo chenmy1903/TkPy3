@@ -1,15 +1,28 @@
-import markdown2
+import markdown
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt
 from PyQt5.QtWebEngineWidgets import QWebEngineView
+from pygments.formatters.html import HtmlFormatter
 from qtconsole.pygments_highlighter import PygmentsHighlighter
 from TkPy3.default_configs import get_configs
 from pygments.lexers.html import HtmlLexer
 
 
 def to_html(text):
-    return markdown2.markdown(text)
+    css = HtmlFormatter().get_style_defs('.codehilite')
+    extensions = [
+        'markdown.extensions.extra',
+        'markdown.extensions.codehilite',
+        'markdown.extensions.toc',
+        'markdown.extensions.tables'
+    ]
+    style_code = f'''
+<style>
+{css}
+</style>
+'''
+    return style_code + markdown.markdown(text, extensions=extensions)
 
 
 class PyQt5MarkdownDialog(QDialog):

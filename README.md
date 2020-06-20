@@ -12,7 +12,7 @@ python -m TkPy3.tkpy3_tools.relys
 ```
 如果上面那个无法运行，请运行这个:
 ```
-python -m pip install --upgrade pygments PyQt5 pip pickleshare autopep8 qscintilla diff_match_patch jedi==0.15.2 uvicorn FastAPI jinja2 markdown2 qtconsole --timeout 1000
+python -m pip install --upgrade pygments PyQt5 pip pickleshare autopep8 qscintilla diff_match_patch jedi==0.15.2 uvicorn FastAPI jinja2 markdown qtconsole --timeout 1000
 ```
 ## 运行TkPy3
 > 如果已安装TkPy3
@@ -27,6 +27,10 @@ python run_code.py
 > ## 注意: 不要用IDLE运行
 
 # 版本记录
+#### 3.6.84
+<pre>
+markdown功能添加代码高亮
+</pre>
 #### 3.6.83
 <pre>
 加入重置TkPy3的设置功能

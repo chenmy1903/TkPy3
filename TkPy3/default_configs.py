@@ -27,7 +27,7 @@ configs = {
     'is_activate': False,
     'end_activate_day': False,
     'events': events,
-    'window_style': 'Windows',  # ['windowsvista', 'Windows', 'Fusion']
+    'window_style': 'Windows',  # 'windowsvista', 'Windows', 'Fusion'
 }
 
 
@@ -67,6 +67,6 @@ def add_config(key, value):
 if __name__ == '__main__':
     new_config: dict = reset_configs().read()
     for key, value in new_config.items():
-        key = key if not isinstance(key, str) else repr(key)
-        value = value if not isinstance(value, str) else repr(value)
+        key = repr(key)
+        value = repr(value)
         print(key, value, sep=': ')

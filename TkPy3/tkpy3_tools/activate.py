@@ -44,7 +44,7 @@ class ActivateDialog(QDialog):
         layout = QFormLayout()
         activate_text = QLineEdit()
         activate_text.textChanged.connect(self.assert_activate_code)
-        activate_text.setInputMask('>AAAA-AAAA-AAAA-AAAA;#')
+        activate_text.setInputMask('>AAAA-AAAA-AAAA-AAAA;_')
         activate_text.setWhatsThis('在此处输入激活码')
         layout.addRow('请输入TkPy3的激活码: ', activate_text)
         self.activate.setLayout(layout)
@@ -71,14 +71,15 @@ class ActivateDialog(QDialog):
             self.activate_button.setDisabled(True)
 
     def start_activate_code_game(self):
+        max_score = random.randint(20, 40)
         res = QMessageBox.question(
-            self, '如何获取激活码', '获取激活码规则：\n 玩飞船大战游戏，分数达到指定分数时即可获取激活码。')
+            self, '如何获取激活码', f'获取激活码规则：\n 玩飞船大战游戏，分数达到{max_score}分时即可获取激活码。')
         if res == QMessageBox.No:
             return
         self.setDisabled(True)
         score = run_activate_game()
         self.setDisabled(False)
-        if score >= 30:
+        if score >= max_score:
             code = random.choice(get_configs()['activate_codes'])
             time.sleep(1)
             QMessageBox.information(self, '提示', f'激活码获取成功，激活码是{code}，将自动为您将激活码复制到剪贴板。')

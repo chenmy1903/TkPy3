@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 import os
-import platform
+import random
 import sys
 import traceback
 
@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
                 add_config('is_activate', True)
                 if not permanent_activation:
                     add_config('end_activate_day', datetime.date.today(
-                    ) + datetime.timedelta(days=30))
+                    ) + datetime.timedelta(days=random.randint(5, 40)))
                 else:
                     add_config('end_activate_day', True)
 
@@ -165,7 +165,7 @@ class MainWindow(QMainWindow):
         config_tkpy3.setStatusTip('设置TkPy3')
         self.TerminalMenu.addAction('重置TkPy3的设置').setStatusTip('重置TkPy3的设置')
         self.TerminalMenu.addSeparator()
-        ToolsMenu = self.TerminalMenu.addMenu('工具')
+        ToolsMenu: QMenu = self.TerminalMenu.addMenu('工具')
         ToolsMenu.addAction('Markdown转Html').setStatusTip(
             'TkPy3工具: Markdown转Html')
         # --------------------------------------------------------------
@@ -314,7 +314,10 @@ TkPy3激活:
         elif event.text() == '重新激活TkPy3':
             self.assert_activate(True)
         elif event.text() == '重置TkPy3的设置':
-            reset_configs()
+            res = QMessageBox.question(self, '问题', '是否重置所有设置')
+            if res == QMessageBox.Yes:
+                reset_configs()
+                QMessageBox.information(self, '提示', '重置完成。')
 
     def open_file(self):
         file_name, ok = QFileDialog.getOpenFileName(

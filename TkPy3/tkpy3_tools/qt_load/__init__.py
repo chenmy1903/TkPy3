@@ -31,6 +31,6 @@ if __name__ == '__main__':
     app = QApplication(sys.argv)
     tkpy3_setup(app)
     widget = LoadWidget()
-    widget.setWindowTitle('TkPy3 Test')
+    widget.setWindowTitle('TkPy3 Test - Loading... ...')
     widget.show()
     sys.exit(app.exec_())
