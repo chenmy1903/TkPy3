@@ -10,6 +10,10 @@ pip install tkpy3
 pip install PyQt5
 python -m TkPy3.tkpy3_tools.relys
 ```
+如果上面那个无法运行，请运行这个:
+```
+python -m pip install --upgrade pygments PyQt5 pip pickleshare autopep8 qscintilla diff_match_patch jedi==0.15.2 uvicorn FastAPI jinja2 markdown2 qtconsole --timeout 1000
+```
 ## 运行TkPy3
 > 如果已安装TkPy3
 ```
