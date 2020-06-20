@@ -78,7 +78,7 @@ class ActivateDialog(QDialog):
         self.setDisabled(True)
         score = run_activate_game()
         self.setDisabled(False)
-        if score >= 4:
+        if score >= 30:
             code = random.choice(get_configs()['activate_codes'])
             time.sleep(1)
             QMessageBox.information(self, '提示', f'激活码获取成功，激活码是{code}，将自动为您将激活码复制到剪贴板。')
