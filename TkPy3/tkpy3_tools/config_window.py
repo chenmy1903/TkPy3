@@ -1,12 +1,12 @@
 # -*- coding: UTF-8 -*-
 from PyQt5 import QtGui
-from PyQt5.QtCore import QRect
+from PyQt5.QtCore import QRect, Qt, QDir
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 import sys
 import os
 
-from TkPy3.default_configs import get_configs, add_config
+from TkPy3.default_configs import get_configs
 from TkPy3.locale_dirs import images_icon_dir
 from pygments.styles import STYLE_MAP
 
@@ -50,6 +50,11 @@ class ConfigDialog(QDialog):
         layout = QFormLayout()
         widget.setLayout(layout)
         style_list = QComboBox()
+        complete = QCompleter(QStyleFactory.keys())
+        complete.setFilterMode(Qt.MatchContains)
+        complete.setCompletionMode(QCompleter.PopupCompletion)
+        style_list.setCompleter(complete)
+        style_list.setEditable(True)
         style_list.addItems(QStyleFactory.keys())
         layout.addRow('选择样式: ', style_list)
         return widget
