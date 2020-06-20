@@ -36,13 +36,26 @@ class ConfigDialog(QDialog):
         self.hbox.addWidget(self.config_view)
         self.config_list.currentRowChanged.connect(self.diaplay_config_list)
         self.setLayout(self.hbox)
-        self.init_base_config()
+        self.config_view.addWidget(self.init_base_config())
+        self.config_list.addItem('基础设置')
+        self.config_view.addWidget(self.init_style_config())
+        self.config_list.addItem('样式设置')
 
     def init_base_config(self):
-        pass
-        
-    def diaplay_config_list(self, i):
-        self.config_view.setCurrentIndex(i)
+        widget = QWidget()
+        return widget
+
+    def init_style_config(self):
+        widget = QWidget()
+        layout = QFormLayout()
+        widget.setLayout(layout)
+        style_list = QComboBox()
+        style_list.addItems(QStyleFactory.keys())
+        layout.addRow('选择样式: ', style_list)
+        return widget
+
+    def diaplay_config_list(self, index):
+        self.config_view.setCurrentIndex(index)
 
 
 def main():

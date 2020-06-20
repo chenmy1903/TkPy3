@@ -51,6 +51,7 @@ class BaseEditor(QWidget):
     def autopep8_fix_code(self):
         text = autopep8.fix_code(self.text.text())
         self.text.setText(text)
+        self.assert_text()
 
     def run(self):
         QMessageBox.information(self, 'TkPy测试', '运行')
@@ -63,7 +64,7 @@ class BaseEditor(QWidget):
                 else:
                     self.save.emit()
         else:
-            if assert_text(self.text.text(), get_configs()['init_text']):
+            if assert_text(self.text.text().replace('\r', ''), get_configs()['init_text']):
                 self.not_save.emit()
             else:
                 self.save.emit()

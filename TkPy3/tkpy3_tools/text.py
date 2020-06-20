@@ -10,7 +10,6 @@ from PyQt5.QtPrintSupport import QPrintDialog
 from PyQt5.QtWidgets import QApplication
 from diff_match_patch import diff_match_patch
 
-from TkPy3 import get_configs
 from TkPy3.locale_dirs import PYQT5_PATH
 
 

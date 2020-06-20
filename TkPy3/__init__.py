@@ -6,10 +6,12 @@ import traceback
 
 from PyQt5 import QtGui
 from PyQt5.Qt import PYQT_VERSION_STR
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 
 from TkPy3.default_configs import add_config, add_diff, get_configs
+from TkPy3.tkpy3_tools.base_mainwindow import BaseTkPy3
 from TkPy3.tkpy3_tools.start import setup as tkpy3_setup
 from TkPy3.tkpy3_tools.config_window import ConfigDialog
 from TkPy3.tkpy3_tools.editor import BaseEditor
@@ -23,8 +25,9 @@ from TkPy3.tkpy3_tools.activate import ActivateDialog
 from TkPy3.tkpy3_tools.activate_game import random_activation_codes
 from TkPy3.tkpy3_tools.report import BugReportWindow, NewFunctionReportWindow
 from TkPy3.tkpy3_tools.pyshell import TkPyShell
-import time
 import datetime
+
+__author__ = 'chenmy1903'
 
 
 class MainWindow(QMainWindow):
@@ -37,8 +40,9 @@ class MainWindow(QMainWindow):
         self.tools_bar = self.addToolBar('')
         self.tip = QStatusBar()
         self.setStatusBar(self.tip)
-        self.windows_mdi = QMdiArea()
-        self.setCentralWidget(self.windows_mdi)
+        self.base_tkpy = BaseTkPy3()
+        self.windows_mdi = self.base_tkpy.mdi
+        self.setCentralWidget(self.base_tkpy)
         self.Menu: QMenuBar = self.menuBar()
         self.FileMenu = self.Menu.addMenu('文件')
         self.EditMenu = self.Menu.addMenu('编辑')
@@ -55,6 +59,7 @@ class MainWindow(QMainWindow):
         self.add_tools_bar_items()
         self.add_menus()
         self.tools_bar.setMovable(False)
+        self.setWindowState(Qt.WindowMaximized)
 
     def open_python_shell(self):
         pyshell_window = QMdiSubWindow()
@@ -67,24 +72,33 @@ class MainWindow(QMainWindow):
         self.windows_mdi.addSubWindow(pyshell_window)
         pyshell_window.show()
 
-    def assert_activate(self):
-        if not get_configs()['is_activate']:
-            self.open_activate_window()
+    def assert_activate(self, reactivate=False):
+        if not get_configs()['is_activate'] or reactivate:
+            permanent_activation = self.open_activate_window()
             if not get_configs()['is_activate']:
                 QMessageBox.critical(self, '错误', 'TkPy3未激活，即将退出TkPy3。')
                 sys.exit()
             else:
                 add_config('is_activate', True)
-                if add_config('end_activate_day', None) is not None:
+                if not permanent_activation:
                     add_config('end_activate_day', datetime.date.today(
                     ) + datetime.timedelta(days=30))
-        # elif get_configs()['end_activate_day'] >= datetime.date.today():
-        #    add_config('is_activate', False)
-        #    self.assert_activate()
-        #    random_activation_codes()
+                else:
+                    add_config('end_activate_day', True)
+
+        elif isinstance(get_configs()['end_activate_day'], bool):
+            add_config('is_activate', True)
+            random_activation_codes()
+
+        elif get_configs()['end_activate_day'] <= datetime.date.today():
+            add_config('is_activate', False)
+            self.assert_activate()
+            random_activation_codes()
 
     def open_activate_window(self):
-        ActivateDialog().exec_()
+        dialog = ActivateDialog()
+        dialog.exec_()
+        return dialog.permanent_activation
 
     def add_tools_bar_items(self):
         self.tools_bar.actionTriggered[QAction].connect(self.MenuEvents)
@@ -186,6 +200,8 @@ class MainWindow(QMainWindow):
         relyMenu.addAction('TkPy3的依赖').setStatusTip('查看TkPy3的依赖')
         relyMenu.addAction('安装TkPy3的所有依赖').setStatusTip('安装TkPy3的所有依赖')
         self.HelpMenu.addSeparator()
+        self.HelpMenu.addAction('重新激活TkPy3').setStatusTip('打开TkPy3激活窗口以重新激活TkPy3')
+        self.HelpMenu.addSeparator()
         self.HelpMenu.addAction('报告Bug').setStatusTip('在GitHub上报告TkPy3的Bug')
         self.HelpMenu.addAction('报告TkPy3的功能改进').setStatusTip(
             '在Gitter上报告TkPy3的功能改进')
@@ -227,7 +243,12 @@ class MainWindow(QMainWindow):
             QMessageBox.information(self, '关于TkPy3', f"""TkPy3一个使用PyQt5制作的TkPy IDE
 TkPy3: {__version__}
 PyQt5: {PYQT_VERSION_STR}
-System:  {platform.system()}   
+
+TkPy3激活:
+激活到期时间: {get_configs()['end_activate_day'] 
+            if not isinstance(get_configs()['end_activate_day'], bool) else "永久激活"}
+-----------------------------------
+{__author__} ©2020 All Rights Reserved.
                 """)
         elif event.text() == 'TkPy3的依赖':
             dialog = RelyDialog()
@@ -287,6 +308,10 @@ System:  {platform.system()}
             self.open_python_shell()
         elif event.text() == '报告TkPy3的功能改进':
             NewFunctionReportWindow().exec_()
+        elif event.text() == '关闭所有子窗口':
+            self.windows_mdi.closeAllSubWindows()
+        elif event.text() == '重新激活TkPy3':
+            self.assert_activate(True)
 
     def open_file(self):
         file_name, ok = QFileDialog.getOpenFileName(
@@ -388,7 +413,7 @@ def main():
     return_code = app.exec_()
     if return_code:
         raise TkPyQtError('TkPy3在运行中出现错误。') from None
-    
+
     return return_code
 
 
