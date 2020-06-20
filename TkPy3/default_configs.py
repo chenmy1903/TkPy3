@@ -32,8 +32,17 @@ configs = {
 
 
 def reset_configs():
+    old = get_configs()
+    end_activate_day = old['end_activate_day']
+    is_activate = old['is_activate']
+    activate_codes = old['activate_codes']
+    permanent_activation_codes = old['permanent_activation_codes']
     f = tkpy_file('config', configs)
     f.reset()
+    f.add('end_activate_day', end_activate_day)
+    f.add('is_activate', is_activate)
+    f.add('permanent_activation_codes', permanent_activation_codes)
+    f.add('activate_codes', activate_codes)
     return f
 
 

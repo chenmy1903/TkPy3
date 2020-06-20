@@ -10,7 +10,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
 
-from TkPy3.default_configs import add_config, add_diff, get_configs
+from TkPy3.default_configs import add_config, add_diff, get_configs, reset_configs
 from TkPy3.tkpy3_tools.base_mainwindow import BaseTkPy3
 from TkPy3.tkpy3_tools.start import setup as tkpy3_setup
 from TkPy3.tkpy3_tools.config_window import ConfigDialog
@@ -163,6 +163,7 @@ class MainWindow(QMainWindow):
         config_tkpy3 = self.TerminalMenu.addAction(QIcon(os.path.join(images_icon_dir, 'config_icons', 'advanced.png')),
                                                    '设置')
         config_tkpy3.setStatusTip('设置TkPy3')
+        self.TerminalMenu.addAction('重置TkPy3的设置').setStatusTip('重置TkPy3的设置')
         self.TerminalMenu.addSeparator()
         ToolsMenu = self.TerminalMenu.addMenu('工具')
         ToolsMenu.addAction('Markdown转Html').setStatusTip(
@@ -312,6 +313,8 @@ TkPy3激活:
             self.windows_mdi.closeAllSubWindows()
         elif event.text() == '重新激活TkPy3':
             self.assert_activate(True)
+        elif event.text() == '重置TkPy3的设置':
+            reset_configs()
 
     def open_file(self):
         file_name, ok = QFileDialog.getOpenFileName(
