@@ -1,4 +1,5 @@
 # -*- coding: UTF-8 -*-
+import datetime
 import sys
 import random
 import time
@@ -26,11 +27,13 @@ class ActivateDialog(QDialog):
 
     def init_ui(self):
         self.create_activate_qwidget()
+        self.create_evaluate_qwidget()
         self.activate_button.setText('激活')
         self.get_activate_code.clicked.connect(self.start_activate_code_game)
         self.activate_button.setDisabled(True)
         self.layout.addWidget(QLabel('<h1>TkPy3激活</h1>'), 0, 0)
         self.view.addWidget(self.activate)
+        self.view.addWidget(self.evaluate)
         self.view.setCurrentIndex(0)
         self.layout.addWidget(self.view, 1, 0)
         self.layout.addWidget(self.get_activate_code, 2, 0)

@@ -6,11 +6,21 @@ import jedi
 from PyQt5.Qsci import QsciAPIs, QsciLexerPython, QsciScintilla
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import pyqtSignal, Qt, QThread
-from PyQt5.QtPrintSupport import QPrintDialog
-from PyQt5.QtWidgets import QApplication
+from PyQt5.QtWidgets import QApplication, QTextBrowser
 from diff_match_patch import diff_match_patch
 
-from TkPy3.locale_dirs import PYQT5_PATH
+from TkPy3.locale_dirs import BASE_DIR
+from TkPy3.tkpy3_tools.start import set_icon_to_tkpy3
+
+
+class PythonLexer(QsciLexerPython):
+    def __init__(self, parent):
+        super(PythonLexer, self).__init__(parent)
+        editor = self.parent()
+        editor.SendScintilla(editor.SCI_STYLESETHOTSPOT, 1, True)
+
+
+text_lexer = PythonLexer
 
 
 def assert_text(old_text, new_text):
@@ -21,6 +31,17 @@ def assert_text(old_text, new_text):
     patches = dmp.patch_fromText(diff)
     new_text, _ = dmp.patch_apply(patches, old_text)
     return bool(_)
+
+
+def view_license():
+    widget = QTextBrowser()
+    widget.setLineWrapMode(0)
+    set_icon_to_tkpy3(widget)
+    widget.resize(800, 550)
+    with open(os.path.join(BASE_DIR, 'LICENSE.txt')) as f:
+        widget.setPlainText(f.read())
+    widget.setWindowTitle('TkPy3 License')
+    return widget
 
 
 class AutoComplete(QThread):
@@ -38,8 +59,8 @@ class AutoComplete(QThread):
             script = jedi.Script(
                 self.text, line + 1, column)
             if script.completions():
-                print(script.completions()[0].description)
-            for completion in script.completions():
+                print(script.completions(True)[0].description)
+            for completion in script.completions(True):
                 completions.append(completion.name)
         self.prepare.emit(completions)
         self.started = False
@@ -62,10 +83,9 @@ class TkPyTextEdit(QsciScintilla):
         QsciScintilla.__init__(self, parent)
         self.complete = AutoComplete()
         self.complete.prepare.connect(self.update_completes)
-        self.lexer = QsciLexerPython(self)
+        self.lexer = text_lexer(self)
         self.setLexer(self.lexer)
         self.api = QsciAPIs(self.lexer)
-        self.api.load(os.path.join(PYQT5_PATH, "Qt/qsci/api/python/PyQt5.api"))
         self.setAutoIndent(True)
         self.setMarginLineNumbers(0, True)
         self.setEdgeMode(QsciScintilla.EdgeLine)
@@ -91,16 +111,19 @@ class TkPyTextEdit(QsciScintilla):
         self.setAutoCompletionSource(QsciScintilla.AcsAll)
         self.setAutoCompletionCaseSensitivity(True)
         self.setAutoCompletionReplaceWord(True)
-        self.autoCompleteFromDocument()
+        self.autoCompleteFromAll()
         self.setAutoCompletionThreshold(1)
         self.setAutoCompletionSource(QsciScintilla.AcsAll)
         self.setUtf8(True)
         self.setCallTipsVisible(-1)
 
+    def goto_html_or_define(self, position):
+        print(position)
+
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Space:
             if QApplication.keyboardModifiers() == Qt.ControlModifier:
-                self.autoCompleteFromDocument()
+                self.autoCompleteFromAll()
                 return
         QsciScintilla.keyPressEvent(self, event)
         self.complete.line, self.complete.column = self.getCursorPosition()
@@ -130,6 +153,8 @@ class TkPyTextEdit(QsciScintilla):
 if __name__ == "__main__":
     app = QApplication([])
     widget = TkPyTextEdit()
+    v = view_license()
+    v.show()
     widget.resize(800, 600)
     widget.setWindowTitle('TkPy3 Test')
     widget.show()

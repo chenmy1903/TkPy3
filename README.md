@@ -6,7 +6,6 @@ pip install tkpy3
 
 ## 安装依赖
 ```
-
 pip install PyQt5
 python -m TkPy3.tkpy3_tools.relys
 ```
@@ -27,6 +26,27 @@ python run_code.py
 > ## 注意: 不要用IDLE运行
 
 # 版本记录
+#### 3.6.85
+<pre>
+修复一些小Bug
+增加版权 (chenmy1903 ©)
+开放Web版帮助
+增加Qt加载功能 （还是未开放）
+自动补全有Bug (现在不开放了)
+增加拓展功能 (未开放)
+加入百度翻译 (未开放)
+加入转到源码 (未开放)
+安装依赖加入黑色主题
+Markdown转换器加入pygments代码高亮
+</pre>
+##### 3.6.86版本预告 (做好会晚一点)
+<pre>
+加入Pyshell
+加入重新打开文件
+加入TkPy Path管理器
+加入运行功能
+加入Windows Path管理器 (比较危险，不要轻易尝试，除非用虚拟机)
+</pre>
 #### 3.6.84
 <pre>
 markdown功能添加代码高亮

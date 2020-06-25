@@ -5,6 +5,7 @@ import uvicorn
 from starlette.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
 
+from TkPy3.tkpy_doc.serever_configs import port
 from TkPy3.version import version as tkpy_version
 from TkPy3.locale_dirs import BASE_DIR, images_icon_dir
 from starlette.requests import Request
@@ -15,12 +16,17 @@ app.mount('/images_icon', StaticFiles(directory=images_icon_dir),
           name='images_icon')
 templates = Jinja2Templates(os.path.join(BASE_DIR, 'tkpy_doc', "templates"))
 
+
 @app.get('/')
 def index(request: Request):
     return templates.TemplateResponse('index.html', {'request': request})
 
-def main():
-    uvicorn.run(app, port=8084)
+
+def main(*, port: int = port):
+    return uvicorn.run(app, port=port)
+
+
+run_server = main
 
 if __name__ == "__main__":
-    main()
+    print(main())

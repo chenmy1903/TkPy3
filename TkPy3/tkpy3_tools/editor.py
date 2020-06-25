@@ -1,13 +1,43 @@
 # -*- coding: UTF-8 -*-
-from PyQt5.QtGui import QFont, QTextDocument
+from PyQt5 import QtGui
+from PyQt5.QtGui import QFont
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import *
 import autopep8
 
 from TkPy3.default_configs import get_configs, add_diff
 from TkPy3.tkpy3_tools.find import TkPyFindWidget
+from TkPy3.tkpy3_tools.start import tkpy3_setup
 from TkPy3.tkpy3_tools.text import TkPyTextEdit, assert_text
 import sys
+
+
+class EditSubWindow(QMdiSubWindow):
+    save = True
+    number = 0
+
+    def setSave(self, b: bool):
+        self.save = b
+
+    def closeEvent(self, event: QtGui.QCloseEvent) -> None:
+        res = QMessageBox.No
+        if not self.save:
+            res = QMessageBox.question(self, 'TkPy3 - SubWindow', f'文件{self.windowTitle()}未保存，是否保存之后退出子窗口?',
+                                       QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel,
+                                       QMessageBox.Cancel)
+        if res == QMessageBox.Yes:
+            file_name, ok = QFileDialog.getSaveFileName(
+                self, '保存文件', '', 'Python 源文件 (*.py *.pyw)')
+            if ok:
+                self.widget().save_file(file_name)
+            event.accept()
+        elif res == QMessageBox.No:
+            event.accept()
+        else:
+            event.ignore()
+
+    def setNumber(self, number: int):
+        self.number = number
 
 
 class BaseEditor(QWidget):
@@ -73,6 +103,7 @@ class BaseEditor(QWidget):
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = BaseEditor()
+    tkpy3_setup(app)
     widget.setWindowTitle('TkPy3 Test')
     widget.show()
     sys.exit(app.exec_())

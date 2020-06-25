@@ -2,7 +2,7 @@
 # -------------------------------
 # | TkPy3 tools compile pyd file|
 # -------------------------------
-from PyQt5.QtWidgets import *
+# Chenmy1903 © 2020 All Rights Reserved
 from TkPy3.tkpy3_tools.extension import TkPyExtensionType
 import sys
 import subprocess
@@ -19,4 +19,3 @@ distutils.setup(
 """
 command = f"{sys.executable} setup.py build_ext --inplace"
 extension_config = TkPyExtensionType('编译Pyd文件', __version__)
-

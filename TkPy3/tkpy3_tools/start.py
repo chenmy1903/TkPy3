@@ -10,12 +10,13 @@ def set_icon_to_tkpy3(app: QApplication):
 
 
 def set_style(app: QApplication):
-    app.setStyle(QStyleFactory.create(get_configs()['window_style']))
+    return app.setStyle(QStyleFactory.create(get_configs()['window_style']))
 
 
-def setup(app: QApplication):
+def setup(app: QApplication) -> "QApplication":
     set_style(app)
     set_icon_to_tkpy3(app)
+    return app
 
 
 tkpy3_setup = setup

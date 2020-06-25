@@ -6,7 +6,7 @@ class TkPyExtensionType(dict):
     version: str
     command: types.FunctionType
 
-    def __init__(self, name: str, version: str = None, command: types.FunctionType = None, **kwargs):
+    def __init__(self, name: str, version: str = None, command: types.FunctionType = lambda: None, **kwargs):
         dict.__init__(self, name=name, version=version,
                       command=command, **kwargs)
 
@@ -22,6 +22,9 @@ class TkPyExtensionType(dict):
             return self[name]
         except KeyError:
             return dict.__getattribute__(self, name)
+
+    def __setattr__(self, key, value):
+        self[key] = value
 
 
 if __name__ == "__main__":

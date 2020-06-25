@@ -5,8 +5,15 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from pygments.formatters.html import HtmlFormatter
 from qtconsole.pygments_highlighter import PygmentsHighlighter
+
 from TkPy3.default_configs import get_configs
 from pygments.lexers.html import HtmlLexer
+
+from TkPy3.tkpy3_tools.start import tkpy3_setup
+
+image_url = \
+    'https://' \
+    'imgsa.baidu.com/forum/w%3D580/sign=8eafdc1f9e82d158bb8259b9b00b19d5/07489682b9014a90a9a51c4cab773912b21bee03.jpg'
 
 
 def to_html(text):
@@ -46,7 +53,9 @@ class PyQt5MarkdownDialog(QDialog):
 
     def init_ui(self):
         self.loadMarkdown_file_button.setText('选择Markdown文件')
-        self.html_view.setHtml('<h1>欢迎使用TkPy3 Markdown转换器</h1>')
+        self.html_view.setHtml(
+            f'<h1>欢迎使用TkPy3 Markdown转换器</h1>\
+            <img src={image_url}>')
         self.show_file_name.setText('请选择文件')
         self.save_button.setText('保存Html文件')
         self.save_button.setDisabled(True)
@@ -91,5 +100,6 @@ class PyQt5MarkdownDialog(QDialog):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    tkpy3_setup(app)
     dialog = PyQt5MarkdownDialog()
     sys.exit(dialog.exec_())

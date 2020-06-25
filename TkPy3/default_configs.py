@@ -27,7 +27,7 @@ configs = {
     'is_activate': False,
     'end_activate_day': False,
     'events': events,
-    'window_style': 'Windows',  # 'windowsvista', 'Windows', 'Fusion'
+    'window_style': 'Fusion',  # 'windowsvista', 'Windows', 'Fusion'
 }
 
 

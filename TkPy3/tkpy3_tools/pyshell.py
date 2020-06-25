@@ -1,6 +1,5 @@
 from PyQt5.QtWidgets import *
 import sys
-from PyQt5.QtCore import pyqtSignal, Qt
 
 from TkPy3.tkpy3_tools.start import setup as tkpy_setup
 

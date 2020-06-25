@@ -2,10 +2,13 @@
 import sys
 import os
 
+import qdarkstyle
 from PyQt5 import QtGui
-from PyQt5.QtCore import QThread, pyqtSignal, Qt, QObject
+from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import *
+
+from TkPy3.tkpy3_tools.start import tkpy3_setup
 from TkPy3.version import version as tkpy_version
 from TkPy3.tkpy3_tools.pip_tools import tkpy_pip
 from TkPy3.locale_dirs import images_icon_dir, static_dir
@@ -36,6 +39,7 @@ class InstallThread(QThread):
 class RelyDialog(QDialog):
     def __init__(self):
         QDialog.__init__(self)
+        self.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
         self.resize(800, 400)
         self.setWindowTitle(f'TkPy{tkpy_version} 依赖')
         self.setWindowIcon(
@@ -147,5 +151,6 @@ class InstallDialog(RelyDialog):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    tkpy3_setup(app)
     dialog = InstallDialog()
     sys.exit(dialog.exec_())
