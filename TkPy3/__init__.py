@@ -7,8 +7,6 @@ import traceback
 import datetime
 import warnings
 
-from pyqtgraph.examples.__main__ import ExampleLoader
-
 from PyQt5.Qt import PYQT_VERSION_STR
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon, QCloseEvent
@@ -21,11 +19,14 @@ from PyQt5.QtWidgets import (
     QApplication,
     QAction,
     QMenu,
-    QMdiSubWindow)
+    QMdiSubWindow,
+    QInputDialog, QMdiArea,
+)
 
 from TkPy3.default_configs import add_config, add_diff, get_configs, reset_configs
 from TkPy3.tkpy3_tools.base_mainwindow import BaseTkPy3, TkPyDockWidget
 from TkPy3.tkpy3_tools.help import TkPyHelpWidget, HelpServer
+from TkPy3.tkpy3_tools.star import StarDialog
 from TkPy3.tkpy3_tools.start import setup as tkpy3_setup, set_icon_to_tkpy3
 from TkPy3.tkpy3_tools.config_window import ConfigDialog
 from TkPy3.tkpy3_tools.editor import BaseEditor, EditSubWindow
@@ -33,12 +34,14 @@ from TkPy3.tkpy3_tools.events import TkPyEventType
 from TkPy3.locale_dirs import BASE_DIR, images_icon_dir
 from TkPy3.tkpy3_tools.relys import RelyDialog, InstallDialog
 from TkPy3.tkpy3_tools.markdown_tools import PyQt5MarkdownDialog
+from TkPy3.tkpy3_tools.style import load_style_sheet
 from TkPy3.version import version as __version__
 from TkPy3.tkpy3_tools.errors import TkPyIdeError, TkPyQtError
 from TkPy3.tkpy3_tools.activate import ActivateDialog
 from TkPy3.tkpy3_tools.activate_game import random_activation_codes
 from TkPy3.tkpy3_tools.report import BugReportWindow, NewFunctionReportWindow
 from TkPy3.tkpy3_tools.pyshell import TkPyShell
+import ctypes
 
 __author__ = 'chenmy1903'
 
@@ -55,6 +58,9 @@ pixmaps = {
     'config': os.path.join(images_icon_dir, 'config_icons', 'advanced.png'),
     'python_file': os.path.join(images_icon_dir, 'file_icons', 'py.ico'),
 }
+
+if os.name == 'nt':
+    ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('TkPy3')
 
 
 class MainWindow(QMainWindow):
@@ -95,6 +101,8 @@ class MainWindow(QMainWindow):
         self.setWindowState(Qt.WindowMaximized)
         self.help_dock.open_window.connect(lambda: self.setHelpWidgetOpen(True))
         self.help_dock.close_window.connect(lambda: self.setHelpWidgetOpen(False))
+        self.windows_mdi.setTabsClosable(True)
+        self.windows_mdi.setViewMode(QMdiArea.TabbedView)
 
     def setHelpWidgetOpen(self, b: bool):
         self.help_dock_open = b
@@ -139,7 +147,7 @@ class MainWindow(QMainWindow):
 
     def add_tools_bar_items(self):
         self.FileToolsBar.actionTriggered[QAction].connect(self.MenuEvents)
-        self.FileToolsBar.addAction(QIcon(pixmaps["open_file"]), '打开')
+        self.FileToolsBar.addAction(QIcon(pixmaps["open_file"]), '打开').setStatusTip('打开文件')
         self.FileToolsBar.addAction(QIcon(pixmaps["new_file"]), '新建')
         self.FileToolsBar.addSeparator()
         self.FileToolsBar.addAction(QIcon(pixmaps['save_file']), '保存')
@@ -224,13 +232,13 @@ class MainWindow(QMainWindow):
         redo.setShortcut('Ctrl+Y')
         redo.setStatusTip('撤回上一个操作')
         self.EditMenu.addSeparator()
+        self.EditMenu.addAction('转到行')
         format_code = self.EditMenu.addAction('格式化代码')
         format_code.setShortcut('Ctrl+Alt+L')
         format_code.setStatusTip('使用AutoPEP8格式化代码')
         # --------------------------------------------------------------
         self.HelpMenu.addAction('关于TkPy3').setStatusTip('关于TkPy3')
         self.HelpMenu.addAction('关于PyQt5').setStatusTip('关于PyQt5')
-        self.HelpMenu.addAction('PyQt5示例').setStatusTip('打开PyQt5示例窗口')
         self.HelpMenu.addSeparator()
         relyMenu = self.HelpMenu.addMenu('依赖管理')
         relyMenu.addAction('TkPy3的依赖').setStatusTip('查看TkPy3的依赖')
@@ -241,6 +249,7 @@ class MainWindow(QMainWindow):
         self.HelpMenu.addAction('报告Bug').setStatusTip('在GitHub上报告TkPy3的Bug')
         self.HelpMenu.addAction('报告TkPy3的功能改进').setStatusTip(
             '在Gitter上报告TkPy3的功能改进')
+        self.HelpMenu.addAction('给TkPy3点个Star').setStatusTip('给TkPy3点个Star')
         # --------------------------------------------------------------
 
     def MenuEvents(self, event):
@@ -366,10 +375,20 @@ TkPy3激活:
                 print('opened')
             else:
                 self.removeDockWidget(self.help_dock)
+                self.help_dock_open = False
                 print('closed')
-        elif event.text() == 'PyQt5示例':
-            loader = ExampleLoader()
-            loader.setWindowTitle('TkPy3 PyQt5示例')
+
+        elif event.text() == '转到行':
+            if self.window_mdi_activate_is_pyshell():
+                return
+            max_line = len(self.windows_mdi.activeSubWindow().widget().text.text().split('\n'))
+            line, ok = QInputDialog.getInt(self, '转到行',
+                                           f'请输入一个在1~{max_line}之间的行数:', 1, 1, max_line)
+            if ok and line <= max_line:
+                self.windows_mdi.activeSubWindow().widget().text.goto_line(line)
+        elif event.text() == '给TkPy3点个Star':
+            dialog = StarDialog()
+            dialog.exec_()
 
     def open_file(self):
         file_name, ok = QFileDialog.getOpenFileName(
@@ -433,6 +452,7 @@ TkPy3激活:
         edit.not_save.connect(not_save)
         edit.save.connect(save)
         self.windows_mdi.addSubWindow(sub)
+        sub.close_remove.connect(lambda: self.windows_mdi.removeSubWindow(sub))
         sub.show()
 
     def closeEvent(self, event: QCloseEvent) -> None:
@@ -505,6 +525,7 @@ def main():
     server.start()
     app = QApplication(sys.argv)
     tkpy3_setup(app)
+    app.setStyleSheet(load_style_sheet())
     widget = MainWindow()
     widget.show()
     return_code = app.exec_()

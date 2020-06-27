@@ -26,10 +26,17 @@ python run_code.py
 > ## 注意: 不要用IDLE运行
 
 # 版本记录
+#### 3.6.851
+<pre>
+加入系统任务栏图标 (Windows系统有效)
+更新了TkPy3的图标
+加入文件分页功能 (像<a href="https://www.latex-project.org/">LaTex</a>一样的分页功能)
+README.md加入美化
+</pre>
 #### 3.6.85
 <pre>
 修复一些小Bug
-增加版权 (chenmy1903 ©)
+增加版权 (<a href="https://github.com/chenmy1903">chenmy1903</a> ©)
 开放Web版帮助
 增加Qt加载功能 （还是未开放）
 自动补全有Bug (现在不开放了)

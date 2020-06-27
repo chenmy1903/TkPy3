@@ -15,6 +15,7 @@ import sys
 class EditSubWindow(QMdiSubWindow):
     save = True
     number = 0
+    close_remove = pyqtSignal()
 
     def setSave(self, b: bool):
         self.save = b
@@ -31,8 +32,10 @@ class EditSubWindow(QMdiSubWindow):
             if ok:
                 self.widget().save_file(file_name)
             event.accept()
+            self.close_remove.emit()
         elif res == QMessageBox.No:
             event.accept()
+            self.close_remove.emit()
         else:
             event.ignore()
 

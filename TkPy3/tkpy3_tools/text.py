@@ -10,7 +10,7 @@ from PyQt5.QtWidgets import QApplication, QTextBrowser
 from diff_match_patch import diff_match_patch
 
 from TkPy3.locale_dirs import BASE_DIR
-from TkPy3.tkpy3_tools.start import set_icon_to_tkpy3
+from TkPy3.tkpy3_tools.start import set_icon_to_tkpy3, tkpy3_setup
 
 
 class PythonLexer(QsciLexerPython):
@@ -149,10 +149,15 @@ class TkPyTextEdit(QsciScintilla):
             self.api.add(complete)
         self.api.prepare()
 
+    def goto_line(self, lineno: int):
+        self.SendScintilla(QsciScintilla.SCI_GOTOLINE, lineno)
+        print("goto_line")
+
 
 if __name__ == "__main__":
-    app = QApplication([])
+    app = QApplication(sys.argv)
     widget = TkPyTextEdit()
+    tkpy3_setup(app)
     v = view_license()
     v.show()
     widget.resize(800, 600)
