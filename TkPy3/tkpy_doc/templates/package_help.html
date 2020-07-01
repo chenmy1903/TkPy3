@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{{ url_for('images_icon', path='TkPy.bmp') }}" type="image/bmp">
+    <title>TkPy3 | Tools</title>
+    <script>
+        function update_iframe() {
+            document.getElementById('view').src = '/python/package/help/get/' + document.getElementById("doc").value
+        }
+    </script>
+</head>
+
+<body>
+<h1>TkPy3 | Tools - Python包帮助</h1>
+<label>请输入包名: </label><input type="text" id="doc" oninput="update_iframe()" autocomplete="on"/><br><br>
+<iframe id='view' scrolling='auto' seamless width="100%" height="1000" src="/python/package/help/get/"
+        frameborder="0"></iframe>
+</body>
+
+</html>

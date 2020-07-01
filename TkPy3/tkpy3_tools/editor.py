@@ -2,11 +2,11 @@
 from PyQt5 import QtGui
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QMdiSubWindow, QMessageBox, QFileDialog, QWidget, QVBoxLayout, QApplication
 import autopep8
 
 from TkPy3.default_configs import get_configs, add_diff
-from TkPy3.tkpy3_tools.find import TkPyFindWidget
+from TkPy3.tkpy3_tools.file_reopen import all_file_types
 from TkPy3.tkpy3_tools.start import tkpy3_setup
 from TkPy3.tkpy3_tools.text import TkPyTextEdit, assert_text
 import sys
@@ -28,7 +28,7 @@ class EditSubWindow(QMdiSubWindow):
                                        QMessageBox.Cancel)
         if res == QMessageBox.Yes:
             file_name, ok = QFileDialog.getSaveFileName(
-                self, '保存文件', '', 'Python 源文件 (*.py *.pyw)')
+                self, '保存文件', '', all_file_types)
             if ok:
                 self.widget().save_file(file_name)
             event.accept()

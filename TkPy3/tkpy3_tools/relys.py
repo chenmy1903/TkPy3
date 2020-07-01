@@ -6,7 +6,8 @@ import qdarkstyle
 from PyQt5 import QtGui
 from PyQt5.QtCore import QThread, pyqtSignal, Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QListWidget, QListWidgetItem, QWidget, QHBoxLayout, \
+    QPushButton, QMessageBox, QTextBrowser, QAction, QApplication
 
 from TkPy3.tkpy3_tools.start import tkpy3_setup
 from TkPy3.version import version as tkpy_version

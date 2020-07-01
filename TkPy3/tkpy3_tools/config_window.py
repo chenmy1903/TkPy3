@@ -1,14 +1,16 @@
 # -*- coding: UTF-8 -*-
-from PyQt5 import QtGui
-from PyQt5.QtCore import QRect, Qt, QDir
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QDialog, QStackedWidget, QListWidget, QHBoxLayout, QWidget, QFormLayout, QComboBox, \
+    QCompleter, QApplication, QStyleFactory
 import sys
 import os
 
 from TkPy3.default_configs import get_configs
 from TkPy3.locale_dirs import images_icon_dir
 from pygments.styles import STYLE_MAP
+
+from TkPy3.tkpy3_tools.start import tkpy3_setup
 
 
 def get_pygments_stylemap():
@@ -65,6 +67,7 @@ class ConfigDialog(QDialog):
 
 def main():
     app = QApplication(sys.argv)
+    tkpy3_setup(app)
     dialog = ConfigDialog()
     sys.exit(dialog.exec_())
 

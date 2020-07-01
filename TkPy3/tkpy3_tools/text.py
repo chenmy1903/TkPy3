@@ -151,7 +151,6 @@ class TkPyTextEdit(QsciScintilla):
 
     def goto_line(self, lineno: int):
         self.SendScintilla(QsciScintilla.SCI_GOTOLINE, lineno)
-        print("goto_line")
 
 
 if __name__ == "__main__":

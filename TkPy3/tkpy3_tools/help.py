@@ -32,3 +32,7 @@ class TkPyHelpWidget(QDialog):
     def go_home(self):
         self.view.load(QUrl(self.url))
         self.view.reload()
+
+
+class PythonPackageHelpDialog(TkPyHelpWidget):
+    url = f'http://localhost:{port}/python/package/help'

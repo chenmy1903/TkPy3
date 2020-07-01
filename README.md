@@ -26,11 +26,21 @@ python run_code.py
 > ## 注意: 不要用IDLE运行
 
 # 版本记录
+#### 3.6.852
+<pre>
+修复一些小Bug
+增加
+加入文件拖动功能
+修复使用pythonw运行的时候的Bug
+增加IPython快捷方式
+更新依赖文件
+增加Python包帮助
+</pre>
 #### 3.6.851
 <pre>
 加入系统任务栏图标 (Windows系统有效)
 更新了TkPy3的图标
-加入文件分页功能 (像<a href="https://www.latex-project.org/">LaTex</a>一样的分页功能)
+加入文件分页功能 (像<a href="https://www.latex-project.org/">LaTex</a> (收费)一样的分页功能)
 README.md加入美化
 </pre>
 #### 3.6.85
@@ -46,7 +56,7 @@ README.md加入美化
 安装依赖加入黑色主题
 Markdown转换器加入pygments代码高亮
 </pre>
-##### 3.6.86版本预告 (做好会晚一点)
+##### 3.6.86版本预告 (做好会晚一点) (所有功能分为小版本发布)
 <pre>
 加入Pyshell
 加入重新打开文件

@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QWidget
 
 
 class TkPyFindWidget(QWidget):
@@ -8,4 +8,3 @@ class TkPyFindWidget(QWidget):
 
     def __init__(self, parent=None):
         super(TkPyFindWidget, self).__init__(parent)
-        QLabel(self).setText('<h1>123123123123</h1>')

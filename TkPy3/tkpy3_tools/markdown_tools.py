@@ -1,6 +1,7 @@
 import markdown
 import sys
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QDialog, QGridLayout, QWidget, QHBoxLayout, QSplitter, QPushButton, QLabel, QTextBrowser, \
+    QFileDialog, QMessageBox, QApplication
 from PyQt5.QtCore import Qt
 from PyQt5.QtWebEngineWidgets import QWebEngineView
 from pygments.formatters.html import HtmlFormatter
@@ -81,7 +82,7 @@ class PyQt5MarkdownDialog(QDialog):
 
     def choice_file(self):
         file_name, ok = QFileDialog.getOpenFileName(
-            self, '打开文件', '', 'Markdown文件 (*.md)')
+            self, '打开文件', '', 'Markdown文件 (*.md);; 所有文件 (*.*)')
         if ok:
             self.show_file_name.setText(file_name)
             self.file_name = file_name

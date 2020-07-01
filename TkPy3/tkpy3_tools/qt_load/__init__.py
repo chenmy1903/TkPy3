@@ -1,8 +1,7 @@
 # -*- coding: UTF-8 -*-
-from PyQt5 import QtGui
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QLabel, QApplication
 from TkPy3.locale_dirs import BASE_DIR
 import sys
 import os

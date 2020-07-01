@@ -1,10 +1,10 @@
 # -*- coding: UTF-8 -*-
-import datetime
 import sys
 import random
 import time
 
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QDialog, QLabel, QWidget, QPushButton, QLineEdit, QMessageBox, QFormLayout, QApplication, \
+    QGridLayout, QStackedWidget, QFrame
 from TkPy3.default_configs import get_configs, add_config
 from TkPy3.tkpy3_tools.activate_game import run_activate_game, random_activation_codes
 from TkPy3.tkpy3_tools.start import tkpy3_setup
@@ -42,6 +42,7 @@ class ActivateDialog(QDialog):
         self.assert_activate_code()
         self.get_activate_code.setWhatsThis('没有激活码?通过玩游戏获取激活码。')
         self.setLayout(self.layout)
+        self.view.setFrameStyle(QFrame.Box)
 
     def create_activate_qwidget(self):
         layout = QFormLayout()
