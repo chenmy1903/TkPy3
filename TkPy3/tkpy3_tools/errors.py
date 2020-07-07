@@ -22,6 +22,16 @@ class TkPyQtError(TkPyProgramError):
     pass
 
 
+class NoLexerError(TkPyProgramError):
+    """没有高亮"""
+    pass
+
+
+class NoSetupError(TkPyIdeError):
+    pass
+
+
+
 def get_error():
     sys.last_type, sys.last_value, last_tb = ei = sys.exc_info()
     sys.last_traceback = last_tb

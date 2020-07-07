@@ -1,7 +1,9 @@
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QLabel, QApplication
 from PyQt5.QtCore import QUrl
 from PyQt5.QtWebEngineWidgets import QWebEngineView
+
 import sys
+
 
 class BugReportWindow(QDialog):
     def __init__(self):
@@ -20,12 +22,14 @@ class BugReportWindow(QDialog):
         self.layout.addWidget(self.github_post, 1)
         self.setLayout(self.layout)
 
+
 class NewFunctionReportWindow(BugReportWindow):
     def __init__(self):
         BugReportWindow.__init__(self)
         self.setWindowTitle('提交新功能')
         self.title_label.setText('<h2>报告TkPy3的功能改进或新功能</h2>')
         self.github_post.setUrl(QUrl('https://gitter.im/TkPy3/community'))
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -1,11 +1,16 @@
 # -*- coding: UTF-8 -*-
-from PyQt5.QtGui import QCloseEvent, QIcon
-from PyQt5.QtWidgets import QDockWidget, QSplitter, QWidget, QHBoxLayout, QApplication, QMdiArea, QTabWidget, QTabBar
-from PyQt5.QtCore import pyqtSignal, Qt
-import sys
+import typing
 
-from TkPy3.locale_dirs import pixmaps
+from PyQt5.QtGui import QCloseEvent, QMouseEvent, QIcon, QBrush, QColor
+from PyQt5.QtWidgets import QDockWidget, QSplitter, QWidget, QHBoxLayout, QApplication, QMdiArea, QTabBar, \
+    QStackedWidget, QVBoxLayout, QToolButton
+from PyQt5.QtCore import pyqtSignal, Qt
+
+import sys
+import tkinter as tk
+
 from TkPy3.tkpy3_tools.editor import EditSubWindow
+from TkPy3.tkpy3_tools.text import TkPyTextEdit
 from TkPy3.tkpy3_tools.start import tkpy3_setup
 
 
@@ -22,10 +27,82 @@ class TkPyDockWidget(QDockWidget):
         return super(TkPyDockWidget, self).closeEvent(event)
 
 
+class TabBar(QTabBar):
+    clicked = pyqtSignal()
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        index = self.tabAt(event.pos())
+        if index == self.currentIndex():
+            self.clicked.emit()
+        else:
+            QTabBar.mousePressEvent(self, event)
+
+
+class SideBar(QWidget):
+    def __init__(self, parent=None, *, side=tk.TOP):
+        QWidget.__init__(self, parent)
+        self.side = side
+        self.tabBar = TabBar()
+        self.tabBar.clicked.connect(self.__tabBar_auto_hide)
+        self.widget_view = QStackedWidget()
+        self.__hide = False
+        if side in [tk.TOP, tk.BOTTOM]:
+            self.__layout = QVBoxLayout()
+        elif side in [tk.LEFT, tk.RIGHT]:
+            self.__layout = QHBoxLayout()
+        self.__init_ui()
+
+    def __tabBar_auto_hide(self):
+        if self.__hide:
+            self.widget_view.widget(self.tabBar.currentIndex()).show()
+            self.__hide = False
+        else:
+            self.widget_view.widget(self.tabBar.currentIndex()).hide()
+            self.__hide = True
+
+    def __init_ui(self):
+        self.setLayout(self.__layout)
+        self.tabBar.currentChanged.connect(self.widget_view.setCurrentIndex)
+        if self.side not in [tk.RIGHT, tk.BOTTOM]:
+            self.__layout.addWidget(self.tabBar)
+            self.__layout.addWidget(self.widget_view)
+        else:
+            self.__layout.addWidget(self.widget_view)
+            self.__layout.addWidget(self.tabBar)
+
+    def addTab(self, widget: QWidget, title: str, icon: QIcon = None):
+        if not icon:
+            self.tabBar.addTab(title)
+        else:
+            self.tabBar.addTab(icon, title)
+        self.widget_view.addWidget(widget)
+
+
 class TkPyMdiArea(QMdiArea):
+    sub_add = pyqtSignal()
 
     def __init__(self, parent=None):
         super(TkPyMdiArea, self).__init__(parent)
+
+    def addSubWindow(self, *args):
+        self.sub_add.emit()
+        super(TkPyMdiArea, self).addSubWindow(*args)
+
+
+class LineCountButton(QToolButton):
+    def __init__(self, main_mdi: TkPyMdiArea, parent=None):
+        QToolButton.__init__(self, parent)
+        self.setAutoRaise(True)
+        self.__mdi = main_mdi
+        self.__mdi.subWindowActivated.connect(self.__update)
+        self.__mdi.sub_add.connect(self.__update)
+
+    def __update(self):
+        update = lambda: self.setText(':'.join([str(i) for i in text.getCursorPosition()]))
+        if self.__mdi.activeSubWindow():
+            text: TkPyTextEdit = self.__mdi.activeSubWindow().widget().text
+            text.cursorPositionChanged.connect(update)
+            update()
 
 
 class BaseTkPy3(QWidget):
@@ -34,18 +111,18 @@ class BaseTkPy3(QWidget):
     def __init__(self, parent=None):
         super(BaseTkPy3, self).__init__(parent)
         self.layout = QHBoxLayout()
-        self.left_tab = QTabWidget()
-        self.left_tab.setTabPosition(QTabWidget.West)
         self.splitter = QSplitter()
         self.mdi = TkPyMdiArea()
+        self.mdi_background_style = QBrush(QColor(160, 160, 160, 255))
+        self.mdi_background_style.setStyle(Qt.Dense4Pattern)
+        self.mdi.setBackground(self.mdi_background_style)
+        self.mdi.setHorizontalScrollBarPolicy(Qt.ScrollBarAsNeeded)
+        self.mdi.setVerticalScrollBarPolicy(Qt.ScrollBarAsNeeded)
         self.mdi.setObjectName('WindowMdi')
         self.init_ui()
 
     def init_ui(self):
         self.setLayout(self.layout)
-        self.left_tab.setMovable(True)
-        self.left_tab.addTab(QMdiArea(), QIcon(pixmaps["python_icon"]), '大纲')
-        self.splitter.addWidget(self.left_tab)
         self.splitter.addWidget(self.mdi)
         self.layout.addWidget(self.splitter, 0)
 

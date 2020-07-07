@@ -1,8 +1,9 @@
 # -*- coding: UTF-8 -*-
-from builtins import _PathLike
 
-from PyQt5.QtGui import QColor, QIcon
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtGui import QColor, QIcon, QIntValidator
+from PyQt5.QtWidgets import QWidget, QDialog, QLineEdit, QDialogButtonBox, QFormLayout, QApplication, QMessageBox
+
+import typing
 
 
 def load_icon(path: str, widget: QWidget):
@@ -40,3 +41,8 @@ class RGB:
         if color not in ['R', 'G', 'B']:
             raise ValueError('Is not a color code.')
         return getattr(self, color)
+
+
+if __name__ == '__main__':
+    app = QApplication([])
+    ask_line_row(['\n'])

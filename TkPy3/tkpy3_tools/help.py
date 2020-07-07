@@ -14,12 +14,13 @@ class HelpServer(Process):
 
 class TkPyHelpWidget(QDialog):
     url = f'http://localhost:{port}/'
+    title: str = 'TkPy3 帮助'
 
     def __init__(self, parent=None):
         super(TkPyHelpWidget, self).__init__(parent)
         self.vboxlayout = QVBoxLayout()
         self.resize(1000, 500)
-        self.setWindowTitle('TkPy3 帮助')
+        self.setWindowTitle(self.title)
         self.view = QWebEngineView()
         self.reset_to_home = QPushButton('回到主页')
         self.setLayout(self.vboxlayout)
@@ -36,3 +37,4 @@ class TkPyHelpWidget(QDialog):
 
 class PythonPackageHelpDialog(TkPyHelpWidget):
     url = f'http://localhost:{port}/python/package/help'
+    title = 'Python Package Help'

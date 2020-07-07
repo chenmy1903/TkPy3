@@ -4,6 +4,7 @@ from PyQt5.QtGui import QFont
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import QMdiSubWindow, QMessageBox, QFileDialog, QWidget, QVBoxLayout, QApplication
 import autopep8
+import isort
 
 from TkPy3.default_configs import get_configs, add_diff
 from TkPy3.tkpy3_tools.file_reopen import all_file_types
@@ -53,6 +54,8 @@ class BaseEditor(QWidget):
         self.edit_frame = QVBoxLayout()
         self.file_name = ""
         self.text = TkPyTextEdit()
+        self.text.sort_imports.connect(self.sort_imports)
+        self.text.format_code.connect(self.autopep8_fix_code)
         self.get_start()
 
     def get_start(self):
@@ -84,6 +87,10 @@ class BaseEditor(QWidget):
     def autopep8_fix_code(self):
         text = autopep8.fix_code(self.text.text())
         self.text.setText(text)
+        self.assert_text()
+
+    def sort_imports(self):
+        self.text.setText(isort.code(self.text.text()))
         self.assert_text()
 
     def run(self):

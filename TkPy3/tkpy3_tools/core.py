@@ -9,6 +9,13 @@ def is_venv():
             return True
     return False
 
+
 def windows_set_taskbar_icon():
     if os.name == 'nt':
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('TkPy3')
+
+
+def gen_style(style: dict):
+    for key, value in style.items():
+        style[key] = value.replace(':', ' ').split(' ')[-1]
+    return style

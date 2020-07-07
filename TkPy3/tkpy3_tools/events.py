@@ -16,4 +16,5 @@ class TkPyEventType(object):
 
 
 def get_event(event_name: str):
-    return get_configs()['events'][event_name]
+    # return get_configs()['events'][event_name]
+    return event_name

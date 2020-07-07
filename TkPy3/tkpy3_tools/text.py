@@ -3,17 +3,21 @@ import os
 import sys
 
 import jedi
-from PyQt5.Qsci import QsciAPIs, QsciLexerPython, QsciScintilla
-from PyQt5.QtGui import QColor
+from PyQt5.Qsci import QsciAPIs, QsciScintilla
+from PyQt5.QtGui import QColor, QContextMenuEvent
 from PyQt5.QtCore import pyqtSignal, Qt, QThread
-from PyQt5.QtWidgets import QApplication, QTextBrowser
+from PyQt5.QtWidgets import QApplication, QTextBrowser, QMenu, QAction
 from diff_match_patch import diff_match_patch
+from pygments.token import Name
 
 from TkPy3.locale_dirs import BASE_DIR
+from TkPy3.tkpy3_tools.PyQt5_tools import RGB
+from TkPy3.tkpy3_tools.events import get_event
+from TkPy3.tkpy3_tools.lexers import TkPyPythonLexer
 from TkPy3.tkpy3_tools.start import set_icon_to_tkpy3, tkpy3_setup
 
 
-class PythonLexer(QsciLexerPython):
+class PythonLexer(TkPyPythonLexer):
     def __init__(self, parent):
         super(PythonLexer, self).__init__(parent)
         editor = self.parent()
@@ -78,6 +82,8 @@ def get_eol_mode(mode: str):
 
 class TkPyTextEdit(QsciScintilla):
     key_pressed = pyqtSignal()
+    format_code = pyqtSignal()
+    sort_imports = pyqtSignal()
 
     def __init__(self, parent=None):
         QsciScintilla.__init__(self, parent)
@@ -115,6 +121,9 @@ class TkPyTextEdit(QsciScintilla):
         self.setAutoCompletionThreshold(1)
         self.setAutoCompletionSource(QsciScintilla.AcsAll)
         self.setUtf8(True)
+        self.setBraceMatching(QsciScintilla.StrictBraceMatch)
+        self.setMatchedBraceForegroundColor(QColor(self.lexer.styles[Name.Decorator]))
+        self.setMatchedBraceBackgroundColor(RGB(0, 255, 0).to_pyqt_color())
         self.setCallTipsVisible(-1)
 
     def goto_html_or_define(self, position):
@@ -134,6 +143,36 @@ class TkPyTextEdit(QsciScintilla):
         #        self.complete.start()
         self.key_pressed.emit()
 
+    def contextMenuEvent(self, event: QContextMenuEvent) -> None:
+        menu = QMenu(self)
+        complete_code = menu.addAction('代码提示')
+        complete_code.triggered.connect(self.autoCompleteFromAll)
+        complete_code.setShortcut('Ctrl+Space')
+        menu.addSeparator()
+        copy = menu.addAction('复制')
+        copy.setShortcut(get_event('Ctrl+C'))
+        copy.triggered.connect(self.copy)
+        paste = menu.addAction('粘贴')
+        paste.setShortcut(get_event('Ctrl+V'))
+        paste.triggered.connect(self.paste)
+        cut = menu.addAction('剪切')
+        cut.setShortcut(get_event('Ctrl+X'))
+        cut.triggered.connect(self.cut)
+        menu.addSeparator()
+        undo = menu.addAction('撤销')
+        undo.setShortcut(get_event('Ctrl+Z'))
+        undo.triggered.connect(self.undo)
+        redo = menu.addAction('撤回')
+        redo.setShortcut('Ctrl+Y')
+        redo.triggered.connect(self.redo)
+        menu.addSeparator()
+        format_code = menu.addAction('格式化代码')
+        format_code.triggered.connect(self.format_code.emit)
+        format_code.setShortcut('Ctrl+Alt+L')
+        sort_imports = menu.addAction('整理Import语句')
+        sort_imports.triggered.connect(self.sort_imports.emit)
+        menu.exec_(event.globalPos())
+
     def paste(self):
         QsciScintilla.paste(self)
         self.key_pressed.emit()
@@ -149,8 +188,8 @@ class TkPyTextEdit(QsciScintilla):
             self.api.add(complete)
         self.api.prepare()
 
-    def goto_line(self, lineno: int):
-        self.SendScintilla(QsciScintilla.SCI_GOTOLINE, lineno)
+    def goto_line(self, lineno: int, column: int = 0):
+        self.setCursorPosition(lineno, column)
 
 
 if __name__ == "__main__":

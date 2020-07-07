@@ -16,3 +16,4 @@ pygame
 helium
 BeautifulSoup4
 requests
+isort

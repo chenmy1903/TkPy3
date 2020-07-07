@@ -26,10 +26,20 @@ python run_code.py
 > ## 注意: 不要用IDLE运行
 
 # 版本记录
+#### 3.6.853
+<pre>
+加入版权 (MIT)
+加入Qt5 Ui文件预览器
+Window mdi Tab可移动
+修复没有高亮的Bug
+加入排列Import语句
+加入右键菜单
+增加行号预览(右下角)
+</pre>
 #### 3.6.852
 <pre>
 修复一些小Bug
-增加
+增加重新打开文件
 加入文件拖动功能
 修复使用pythonw运行的时候的Bug
 增加IPython快捷方式

@@ -20,4 +20,5 @@ pixmaps = {
     'python_file': os.path.join(images_icon_dir, 'file_icons', 'py.ico'),
     'search': os.path.join(images_icon_dir, 'editor_icons', 'search.png'),
     'python_icon': os.path.join(images_icon_dir, 'editor_icons', 'python_icon.ico'),
+    'tkpy3': os.path.join(BASE_DIR, 'images', 'icons', 'TkPy.bmp'),
 }

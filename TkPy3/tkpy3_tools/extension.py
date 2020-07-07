@@ -1,4 +1,9 @@
+import os
 import types
+import zipfile
+
+from TkPy3.tkpy3_tools.errors import NoSetupError
+from TkPy3.tkpy3_tools.tkpy_file import config_path as user_install_path
 
 
 class TkPyExtensionType(dict):

@@ -1,5 +1,8 @@
 # -*- coding: UTF-8 -*-
 """TkPy3 PythonIDE"""
+from __future__ import print_function, unicode_literals
+
+import cgitb
 import os
 import random
 import sys
@@ -19,24 +22,26 @@ from PyQt5.QtWidgets import (
     QApplication,
     QAction,
     QMenu,
-    QInputDialog,
     QMdiArea,
+    QInputDialog,
 )
 
 from TkPy3.default_configs import add_config, add_diff, get_configs, reset_configs
-from TkPy3.tkpy3_tools.base_mainwindow import BaseTkPy3, TkPyDockWidget
+from TkPy3.tkpy3_tools.base_mainwindow import BaseTkPy3, TkPyDockWidget, LineCountButton
 from TkPy3.tkpy3_tools.core import windows_set_taskbar_icon
 from TkPy3.tkpy3_tools.file_reopen import all_file_types
 from TkPy3.tkpy3_tools.help import TkPyHelpWidget, HelpServer, PythonPackageHelpDialog
+from TkPy3.tkpy3_tools.qt_file_view import QtUiFileView
 from TkPy3.tkpy3_tools.star import StarDialog
-from TkPy3.tkpy3_tools.start import setup as tkpy3_setup, set_icon_to_tkpy3
+from TkPy3.tkpy3_tools.start import setup as tkpy3_setup, set_icon_to_tkpy3, check_system
 from TkPy3.tkpy3_tools.config_window import ConfigDialog
 from TkPy3.tkpy3_tools.editor import BaseEditor, EditSubWindow
-from TkPy3.tkpy3_tools.events import TkPyEventType
+from TkPy3.tkpy3_tools.events import TkPyEventType, get_event
 from TkPy3.locale_dirs import BASE_DIR, images_icon_dir, pixmaps
 from TkPy3.tkpy3_tools.relys import RelyDialog, InstallDialog
 from TkPy3.tkpy3_tools.markdown_tools import PyQt5MarkdownDialog
 from TkPy3.tkpy3_tools.style import load_style_sheet
+from TkPy3.tkpy3_tools.system import set_tray_items
 from TkPy3.version import version as __version__
 from TkPy3.tkpy3_tools.errors import TkPyIdeError, TkPyQtError
 from TkPy3.tkpy3_tools.activate import ActivateDialog
@@ -48,10 +53,14 @@ __author__ = 'chenmy1903'
 tkpy3_github_url = "https://github.com/chenmy1903/TkPy3"
 
 windows_set_taskbar_icon()
+set_tray_items()
+cgitb.enable()
+check_system()
+
 
 class MainWindow(QMainWindow):
-    def __init__(self, parent=None):
-        QMainWindow.__init__(self, parent)
+    def __init__(self):
+        QMainWindow.__init__(self)
         add_diff()
         self.assert_activate()
         self.untitled_number = 0
@@ -61,6 +70,7 @@ class MainWindow(QMainWindow):
         self.setStatusBar(self.tip)
         self.base_tkpy = BaseTkPy3()
         self.windows_mdi = self.base_tkpy.mdi
+        self.line_count_button = LineCountButton(self.windows_mdi)
         self.setCentralWidget(self.base_tkpy)
         self.Menu: QMenuBar = self.menuBar()
         self.FileMenu = self.Menu.addMenu('文件')
@@ -75,6 +85,7 @@ class MainWindow(QMainWindow):
         self.FileToolsBar = self.addToolBar('文件')
         self.RunToolsBar = self.addToolBar('运行')
         self.HelpToolsBar = self.addToolBar('帮助')
+        self.tip.addPermanentWidget(self.line_count_button)
         self.get_start()
 
     def get_start(self):
@@ -84,7 +95,9 @@ class MainWindow(QMainWindow):
         self.setWindowState(Qt.WindowMaximized)
         self.windows_mdi.setTabsClosable(True)
         self.windows_mdi.setViewMode(QMdiArea.TabbedView)
+        self.windows_mdi.setTabsMovable(True)
         self.setAcceptDrops(True)
+        self.line_count_button.clicked.connect(lambda: self.MenuEvents(TkPyEventType('转到行')))
 
     def open_python_shell(self):
         pyshell_window = EditSubWindow()
@@ -141,25 +154,25 @@ class MainWindow(QMainWindow):
     def add_menus(self):
         self.Menu.triggered[QAction].connect(self.MenuEvents)
         new = self.FileMenu.addAction(QIcon(pixmaps["new_file"]), '新建')
-        new.setShortcut('Ctrl+N')
+        new.setShortcut(get_event('Ctrl+N'))
         new.setStatusTip('新建文件')
         open = self.FileMenu.addAction(QIcon(pixmaps["open_file"]), '打开')
-        open.setShortcut('Ctrl+O')
+        open.setShortcut(get_event('Ctrl+O'))
         open.setStatusTip('打开文件')
         self.FileMenu.addSeparator()
         save = self.FileMenu.addAction(QIcon(pixmaps['save_file']), '保存')
-        save.setShortcut('Ctrl+S')
+        save.setShortcut(get_event('Ctrl+S'))
         save.setStatusTip('保存文件')
         saveas = self.FileMenu.addAction(QIcon(pixmaps['saveas_file']),
                                          '另存为')
         saveas.setStatusTip('另存为文件')
-        saveas.setShortcut('Ctrl+Shift+S')
+        saveas.setShortcut(get_event('Ctrl+Shift+S'))
         save_all = self.FileMenu.addAction(QIcon(pixmaps['save_file']),
                                            "保存所有文件")
         save_all.setStatusTip('保存所有文件')
         self.FileMenu.addSeparator()
         close_window = self.FileMenu.addAction(QIcon(pixmaps["exit"]), '退出TkPy3')
-        close_window.setShortcut('Ctrl+Q')
+        close_window.setShortcut(get_event('Ctrl+Q'))
         close_window.setStatusTip('退出TkPy3主窗口')
         close_window = self.FileMenu.addAction(
             QIcon(pixmaps["restart"]), '重启TkPy3')
@@ -175,7 +188,7 @@ class MainWindow(QMainWindow):
         close_all_files.setStatusTip('关闭所有子窗口')
         # --------------------------------------------------------------
         run = self.RunMenu.addAction(QIcon(pixmaps["run"]), '运行')
-        run.setShortcut('F5')
+        run.setShortcut(get_event('F5'))
         run.setStatusTip('运行代码')
         # --------------------------------------------------------------
         self.TerminalMenu.addAction(QIcon(pixmaps["shell"]), '打开Python Shell').setStatusTip('打开Python Shell')
@@ -189,32 +202,35 @@ class MainWindow(QMainWindow):
         ToolsMenu: QMenu = self.TerminalMenu.addMenu('工具')
         ToolsMenu.addAction('Markdown转Html').setStatusTip(
             'TkPy3工具: Markdown转Html')
+        ToolsMenu.addAction('Qt文件预览').setStatusTip(
+            'TkPy3工具: Qt文件预览')
         # --------------------------------------------------------------
         select_all = self.SelectMenu.addAction('选择全部')
         select_all.setStatusTip('选择全部文字')
-        select_all.setShortcut('Ctrl+A')
+        select_all.setShortcut(get_event('Ctrl+A'))
         # --------------------------------------------------------------
         paste = self.EditMenu.addAction('粘贴')
-        paste.setShortcut('Ctrl+V')
+        paste.setShortcut(get_event('Ctrl+V'))
         paste.setStatusTip('粘贴')
         paste = self.EditMenu.addAction('复制')
-        paste.setShortcut('Ctrl+C')
+        paste.setShortcut(get_event('Ctrl+C'))
         paste.setStatusTip('复制选中的文字')
         paste = self.EditMenu.addAction('剪切')
-        paste.setShortcut('Ctrl+X')
+        paste.setShortcut(get_event('Ctrl+X'))
         paste.setStatusTip('剪切选中的文字')
         self.EditMenu.addSeparator()
         undo = self.EditMenu.addAction('撤销')
-        undo.setShortcut('Ctrl+Z')
+        undo.setShortcut(get_event('Ctrl+Z'))
         undo.setStatusTip('撤销上一个操作')
         redo = self.EditMenu.addAction('撤销')
-        redo.setShortcut('Ctrl+Y')
+        redo.setShortcut(get_event('Ctrl+Y'))
         redo.setStatusTip('撤回上一个操作')
         self.EditMenu.addSeparator()
-        self.EditMenu.addAction('转到行')
         format_code = self.EditMenu.addAction('格式化代码')
-        format_code.setShortcut('Ctrl+Alt+L')
+        format_code.setShortcut(get_event('Ctrl+Alt+L'))
         format_code.setStatusTip('使用AutoPEP8格式化代码')
+        sort_imports = self.EditMenu.addAction('排列Import 语句')
+        sort_imports.setStatusTip('排列Import 语句')
         # --------------------------------------------------------------
         self.HelpMenu.addAction('关于TkPy3').setStatusTip('关于TkPy3')
         self.HelpMenu.addAction('关于PyQt5').setStatusTip('关于PyQt5')
@@ -231,6 +247,10 @@ class MainWindow(QMainWindow):
             '在Gitter上报告TkPy3的功能改进')
         self.HelpMenu.addAction('给TkPy3点个Star').setStatusTip('给TkPy3点个Star')
         self.HelpMenu.addAction('TkPy3的Github官网').setStatusTip('打开TkPy3的Github官网')
+        # --------------------------------------------------------------
+        goto_line_column: QAction = self.GoToMenu.addAction('转到行')
+        goto_line_column.setShortcut('Ctrl+L')
+        goto_line_column.setStatusTip('转到行')
         # --------------------------------------------------------------
 
     def MenuEvents(self, event):
@@ -356,11 +376,12 @@ TkPy3激活:
         elif event.text() == '转到行':
             if self.window_mdi_activate_is_pyshell():
                 return
-            max_line = len(self.windows_mdi.activeSubWindow().widget().text.text().split('\n'))
-            line, ok = QInputDialog.getInt(self, '转到行',
-                                           f'请输入一个在1~{max_line}之间的行数:', 1, 1, max_line)
-            if ok and line <= max_line:
-                self.windows_mdi.activeSubWindow().widget().text.goto_line(line)
+            text = self.windows_mdi.activeSubWindow().widget().text
+            max_line = len(text.text().split('\n'))
+            at_line = text.getCursorPosition()[0] + 1
+            line, ok = QInputDialog.getInt(self, '转到行', '请输入行号: ', at_line, 1, max_line)
+            if ok:
+                text.goto_line(line)
         elif event.text() == '给TkPy3点个Star':
             dialog = StarDialog()
             dialog.exec_()
@@ -383,6 +404,12 @@ TkPy3激活:
 
         elif event.text() == '打开Python包帮助':
             PythonPackageHelpDialog().exec()
+        elif event.text() == '排列Import 语句':
+            widget = self.windows_mdi.activeSubWindow().widget()
+            widget.sort_imports()
+        elif event.text() == 'Qt文件预览':
+            dialog = QtUiFileView()
+            dialog.exec_()
 
     def open_file(self):
         file_name, ok = QFileDialog.getOpenFileName(
@@ -402,7 +429,7 @@ TkPy3激活:
             return False
         return True
 
-    def open_config_dialog_window(self):
+    def open_config_dialog_window(self) -> None:
         dialog = ConfigDialog()
         dialog.exec_()
 
@@ -442,7 +469,7 @@ TkPy3激活:
                                'new_file_title'] + ' ' + str(sub.number) if not file_name else os.path.abspath(
             file_name))
         sub.setWindowIcon(QIcon(pixmaps["python_file"]))
-        edit = BaseEditor(sub)
+        edit = BaseEditor()
         if file_name:
             edit.open(file_name)
         sub.setWidget(edit)
@@ -520,13 +547,10 @@ def main():
     server.start()
     app = QApplication(sys.argv)
     tkpy3_setup(app)
-    app.setStyleSheet(load_style_sheet())
     widget = MainWindow()
     widget.show()
     return_code = app.exec_()
     server.terminate()
-    if return_code:
-        raise TkPyQtError('TkPy3在运行中出现错误。') from None
     return return_code
 
 
