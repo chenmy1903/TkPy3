@@ -28,7 +28,7 @@ class NewFunctionReportWindow(BugReportWindow):
         BugReportWindow.__init__(self)
         self.setWindowTitle('提交新功能')
         self.title_label.setText('<h2>报告TkPy3的功能改进或新功能</h2>')
-        self.github_post.setUrl(QUrl('https://gitter.im/TkPy3/community'))
+        self.github_post.setUrl(QUrl('https://gitter.im/TkPy3/rtnew_repo'))
 
 
 if __name__ == "__main__":

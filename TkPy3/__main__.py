@@ -5,5 +5,5 @@ import sys
 
 if BASE_DIR not in sys.path:
     sys.path.append(BASE_DIR)
-if __name__ == "__main__":
-    sys.exit(main())
+
+main()

@@ -5,6 +5,8 @@ pip install tkpy3
 ```
 
 ## 安装依赖
+
+>注意: 需要安装谷歌浏览器。
 ```
 pip install PyQt5
 python -m TkPy3.tkpy3_tools.relys
@@ -26,6 +28,20 @@ python run_code.py
 > ## 注意: 不要用IDLE运行
 
 # 版本记录
+#### 3.6.854
+<pre>
+加入托盘
+修复Markdown转换器的Bug
+更新图标 (源于Eric6)
+支持多国语言 (现在只有中文)
+加入PyShell (Html Bug Report)
+</pre>
+##### 3.6.855预告
+<pre>
+加入英文支持
+加入TkPy Path
+加入I18n编辑器
+</pre>
 #### 3.6.853
 <pre>
 加入版权 (MIT)

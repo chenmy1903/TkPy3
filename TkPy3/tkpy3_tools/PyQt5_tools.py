@@ -41,8 +41,3 @@ class RGB:
         if color not in ['R', 'G', 'B']:
             raise ValueError('Is not a color code.')
         return getattr(self, color)
-
-
-if __name__ == '__main__':
-    app = QApplication([])
-    ask_line_row(['\n'])

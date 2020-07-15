@@ -4,8 +4,7 @@ from PyQt5 import uic
 from PyQt5.QtGui import QCloseEvent
 from PyQt5.QtWidgets import QApplication, QDialog, QFileDialog, QToolButton, QGridLayout, QLineEdit, QPushButton, \
     QMessageBox, QComboBox, QStyleFactory
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.uic import compiler
+from PyQt5.QtCore import pyqtSignal, Qt
 import sys
 
 from TkPy3 import get_configs
@@ -17,6 +16,7 @@ class ViewWidget(QDialog):
 
     def __init__(self, ui_file: str):
         QDialog.__init__(self)
+        self.setWindowFlags(Qt.WindowCloseButtonHint | Qt.WindowMaximizeButtonHint)
         try:
             uic.loadUi(ui_file, self)
         except Exception:

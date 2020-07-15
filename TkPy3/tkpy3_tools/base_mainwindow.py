@@ -9,6 +9,7 @@ from PyQt5.QtCore import pyqtSignal, Qt
 import sys
 import tkinter as tk
 
+from TkPy3.tkpy3_tools.pyshell import TkPyShell
 from TkPy3.tkpy3_tools.editor import EditSubWindow
 from TkPy3.tkpy3_tools.text import TkPyTextEdit
 from TkPy3.tkpy3_tools.start import tkpy3_setup
@@ -98,11 +99,13 @@ class LineCountButton(QToolButton):
         self.__mdi.sub_add.connect(self.__update)
 
     def __update(self):
-        update = lambda: self.setText(':'.join([str(i) for i in text.getCursorPosition()]))
+        pos = lambda: text.getCursorPosition()
+        update = lambda: self.setText(':'.join([str(pos()[0] + 1), str(pos()[1])]))
         if self.__mdi.activeSubWindow():
-            text: TkPyTextEdit = self.__mdi.activeSubWindow().widget().text
-            text.cursorPositionChanged.connect(update)
-            update()
+            if not isinstance(self.__mdi.activeSubWindow().widget(), TkPyShell):
+                text: TkPyTextEdit = self.__mdi.activeSubWindow().widget().text
+                text.cursorPositionChanged.connect(update)
+                update()
 
 
 class BaseTkPy3(QWidget):

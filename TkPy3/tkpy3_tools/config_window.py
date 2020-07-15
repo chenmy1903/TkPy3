@@ -7,7 +7,7 @@ import sys
 import os
 
 from TkPy3.default_configs import get_configs
-from TkPy3.locale_dirs import images_icon_dir
+from TkPy3.locale_dirs import images_icon_dir, pixmaps
 from pygments.styles import STYLE_MAP
 
 from TkPy3.tkpy3_tools.start import tkpy3_setup
@@ -25,7 +25,7 @@ class ConfigDialog(QDialog):
         QDialog.__init__(self, parent)
         self.setWindowTitle('TkPy3设置')
         self.hbox = QHBoxLayout(self)
-        self.setWindowIcon(QIcon(os.path.join(images_icon_dir, 'config_icons', 'advanced.png')))
+        self.setWindowIcon(QIcon(pixmaps['config']))
         self.config_list = QListWidget()
         self.config_view = QStackedWidget()
         self.get_start()

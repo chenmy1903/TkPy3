@@ -1,10 +1,7 @@
 # -*- coding: UTF-8 -*-
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QWidget
+from PyQt5.QtWidgets import QDialog
 
 
-class TkPyFindWidget(QWidget):
-    pos = pyqtSignal([int, int])
-
-    def __init__(self, parent=None):
-        super(TkPyFindWidget, self).__init__(parent)
+class FindDialog(QDialog):
+    def __init__(self):
+        QDialog.__init__(self)

@@ -8,7 +8,7 @@ class PythonFileViewDialog(QDialog):
         super(PythonFileViewDialog, self).__init__()
         self.__text = QTextBrowser()
         self.__text.setText(text)
-        PygmentsHighlighter(self.text)
+        PygmentsHighlighter(self.__text)
         self.__layout = QVBoxLayout()
         self.setLayout(self.__layout)
         self.__layout.addWidget(self.__text)

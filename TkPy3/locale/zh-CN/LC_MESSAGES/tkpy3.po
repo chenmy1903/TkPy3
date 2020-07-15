@@ -1,0 +1,359 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR ORGANIZATION
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+# "Project-Id-Version: PACKAGE VERSION\n"
+# "POT-Creation-Date: 2020-07-11 11:07+0800\n"
+# "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+# "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+# "Language-Team: LANGUAGE <LL@li.org>\n"
+# "MIME-Version: 1.0\n"
+# "Content-Type: text/plain; charset=UTF-8\n"
+# "Content-Transfer-Encoding: 8bit\n"
+# "Generated-By: pygettext.py 1.5\n"
+
+
+#: __init__.py:78 __init__.py:87
+msgid "文件"
+msgstr ""
+
+#: __init__.py:79
+msgid "编辑"
+msgstr ""
+
+#: __init__.py:80
+msgid "选择"
+msgstr ""
+
+#: __init__.py:81
+msgid "查看"
+msgstr ""
+
+#: __init__.py:82
+msgid "转到"
+msgstr ""
+
+#: __init__.py:83 __init__.py:88 __init__.py:157 __init__.py:207
+#: __init__.py:340
+msgid "运行"
+msgstr ""
+
+#: __init__.py:84
+msgid "终端"
+msgstr ""
+
+#: __init__.py:85 __init__.py:89 __init__.py:161 __init__.py:407
+msgid "帮助"
+msgstr ""
+
+#: __init__.py:102 __init__.py:103 __init__.py:285 __init__.py:287
+#: __init__.py:410 __init__.py:416
+msgid "转到行"
+msgstr ""
+
+#: __init__.py:110
+msgid "Python Shell"
+msgstr ""
+
+#: __init__.py:120
+msgid "TkPy3未激活，即将退出TkPy3。"
+msgstr ""
+
+#: __init__.py:120
+msgid "错误"
+msgstr ""
+
+#: __init__.py:145 __init__.py:170 __init__.py:293
+msgid "打开"
+msgstr ""
+
+#: __init__.py:146 __init__.py:147 __init__.py:172 __init__.py:173
+#: __init__.py:452
+msgid "打开文件"
+msgstr ""
+
+#: __init__.py:148 __init__.py:166 __init__.py:291
+msgid "新建"
+msgstr ""
+
+#: __init__.py:149 __init__.py:168 __init__.py:169
+msgid "新建文件"
+msgstr ""
+
+#: __init__.py:151 __init__.py:175 __init__.py:310 __init__.py:345
+msgid "保存"
+msgstr ""
+
+#: __init__.py:152 __init__.py:177 __init__.py:178
+msgid "保存文件"
+msgstr ""
+
+#: __init__.py:154 __init__.py:181 __init__.py:182
+msgid "另存为文件"
+msgstr ""
+
+#: __init__.py:158 __init__.py:209
+msgid "运行代码"
+msgstr ""
+
+#: __init__.py:162
+msgid "打开帮助"
+msgstr ""
+
+#: __init__.py:180 __init__.py:310 __init__.py:315
+msgid "另存为"
+msgstr ""
+
+#: __init__.py:185 __init__.py:186 __init__.py:187 __init__.py:405
+msgid "保存所有文件"
+msgstr ""
+
+#: __init__.py:189 __init__.py:192 __init__.py:301
+msgid "退出TkPy3"
+msgstr ""
+
+#: __init__.py:191
+msgid "退出TkPy3主窗口"
+msgstr ""
+
+#: __init__.py:194 __init__.py:196 __init__.py:383
+msgid "重启TkPy3"
+msgstr ""
+
+#: __init__.py:197
+msgid "重启"
+msgstr ""
+
+#: __init__.py:199 __init__.py:297
+msgid "排列子窗口"
+msgstr ""
+
+#: __init__.py:201
+msgid "排列所有打开的内部主窗口"
+msgstr ""
+
+#: __init__.py:204 __init__.py:205 __init__.py:392
+msgid "关闭所有子窗口"
+msgstr ""
+
+#: __init__.py:211 __init__.py:212 __init__.py:388
+msgid "打开Python Shell"
+msgstr ""
+
+#: __init__.py:213 __init__.py:402
+msgid "打开终端"
+msgstr ""
+
+#: __init__.py:214
+msgid "打开系统终端"
+msgstr ""
+
+#: __init__.py:216 __init__.py:299
+msgid "设置"
+msgstr ""
+
+#: __init__.py:217
+msgid "设置TkPy3"
+msgstr ""
+
+#: __init__.py:218 __init__.py:219 __init__.py:397
+msgid "重置TkPy3的设置"
+msgstr ""
+
+#: __init__.py:221
+msgid "工具"
+msgstr ""
+
+#: __init__.py:222 __init__.py:380
+msgid "Markdown转Html"
+msgstr ""
+
+#: __init__.py:224
+msgid "TkPy3工具: Markdown转Html"
+msgstr ""
+
+#: __init__.py:225 __init__.py:444
+msgid "Qt文件预览"
+msgstr ""
+
+#: __init__.py:227
+msgid "TkPy3工具: Qt文件预览"
+msgstr ""
+
+#: __init__.py:229 __init__.py:373
+msgid "选择全部"
+msgstr ""
+
+#: __init__.py:230
+msgid "选择全部文字"
+msgstr ""
+
+#: __init__.py:233 __init__.py:235 __init__.py:348
+msgid "粘贴"
+msgstr ""
+
+#: __init__.py:236 __init__.py:353
+msgid "复制"
+msgstr ""
+
+#: __init__.py:239 __init__.py:358
+msgid "剪切"
+msgstr ""
+
+#: __init__.py:243 __init__.py:363
+msgid "撤销"
+msgstr ""
+
+#: __init__.py:246 __init__.py:368
+msgid "撤回"
+msgstr ""
+
+#: __init__.py:248
+msgid "撤回上一个操作"
+msgstr ""
+
+#: __init__.py:250 __init__.py:306
+msgid "格式化代码"
+msgstr ""
+
+#: __init__.py:252
+msgid "使用AutoPEP8格式化代码"
+msgstr ""
+
+#: __init__.py:253 __init__.py:254 __init__.py:441
+msgid "排列Import 语句"
+msgstr ""
+
+#: __init__.py:256 __init__.py:447
+msgid "这是什么"
+msgstr ""
+
+#: __init__.py:258
+msgid "这是什么?"
+msgstr ""
+
+#: __init__.py:260 __init__.py:261 __init__.py:322 __init__.py:323
+msgid "关于TkPy3"
+msgstr ""
+
+#: __init__.py:262 __init__.py:263 __init__.py:378
+msgid "关于PyQt5"
+msgstr ""
+
+#: __init__.py:264 __init__.py:265 __init__.py:439
+msgid "打开Python包帮助"
+msgstr ""
+
+#: __init__.py:267
+msgid "依赖管理"
+msgstr ""
+
+#: __init__.py:268 __init__.py:334
+msgid "TkPy3的依赖"
+msgstr ""
+
+#: __init__.py:269
+msgid "查看TkPy3的依赖"
+msgstr ""
+
+#: __init__.py:270 __init__.py:271 __init__.py:337
+msgid "安装TkPy3的所有依赖"
+msgstr ""
+
+#: __init__.py:273 __init__.py:395
+msgid "重新激活TkPy3"
+msgstr ""
+
+#: __init__.py:274
+msgid "打开TkPy3激活窗口以重新激活TkPy3"
+msgstr ""
+
+#: __init__.py:276 __init__.py:385
+msgid "报告Bug"
+msgstr ""
+
+#: __init__.py:277
+msgid "在GitHub上报告TkPy3的Bug"
+msgstr ""
+
+#: __init__.py:278 __init__.py:390
+msgid "报告TkPy3的功能改进"
+msgstr ""
+
+#: __init__.py:279
+msgid "在Gitter上报告TkPy3的功能改进"
+msgstr ""
+
+#: __init__.py:280 __init__.py:281 __init__.py:419
+msgid "给TkPy3点个Star"
+msgstr ""
+
+#: __init__.py:282 __init__.py:422
+msgid "TkPy3的Github官网"
+msgstr ""
+
+#: __init__.py:283
+msgid "打开TkPy3的Github官网"
+msgstr ""
+
+#: __init__.py:295
+msgid "关闭所有窗口"
+msgstr ""
+
+#: __init__.py:302
+msgid "是否退出TkPy3?"
+msgstr ""
+
+#: __init__.py:302 __init__.py:525
+msgid "TkPy3 - 问题"
+msgstr ""
+
+#: __init__.py:398
+msgid "是否重置所有设置"
+msgstr ""
+
+#: __init__.py:398 __init__.py:430 __init__.py:567
+msgid "问题"
+msgstr ""
+
+#: __init__.py:401
+msgid "提示"
+msgstr ""
+
+#: __init__.py:401
+msgid "重置完成。"
+msgstr ""
+
+#: __init__.py:416
+msgid "请输入行号: "
+msgstr ""
+
+#: __init__.py:424 __init__.py:475
+msgid "重新打开文件"
+msgstr ""
+
+#: __init__.py:430
+msgid "文件未保存，是否保存后重新打开文件?"
+msgstr ""
+
+#: __init__.py:525
+msgid "还有文件未保存,是否保存所有文件之后退出TkPy3？"
+msgstr ""
+
+#: __init__.py:563 __init__.py:577
+msgid "警告"
+msgstr ""
+
+#: __init__.py:567
+msgid "是否重启TkPy3"
+msgstr ""
+
+#: __init__.py:577
+msgid "只能打开py, pyw文件"
+msgstr ""
+
+msgid "搜索"
+msgstr ""
+

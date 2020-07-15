@@ -75,9 +75,9 @@ class PyQt5MarkdownDialog(QDialog):
 
     def save_file(self):
         text = self.text_view.toPlainText()
-        file_name, ok = QFileDialog.getOpenFileName(self, '保存', '', 'Html文件 (*.html)')
+        file_name, ok = QFileDialog.getSaveFileName(self, '保存', '', 'Html文件 (*.html)')
         if ok:
-            with open(self.file_name, 'w', encoding=get_configs()['default_file_encoding']) as f:
+            with open(file_name, 'w', encoding=get_configs()['default_file_encoding']) as f:
                 f.write(text)
 
     def choice_file(self):
