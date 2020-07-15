@@ -120,6 +120,8 @@ class ShellText(QTextEdit):
         elif event.modifiers() == Qt.ControlModifier and event.key() == Qt.Key_C:
             if not self.textCursor().selectedText():
                 self.RaiseKeyboardInterrupt()
+            else:
+                self.copy()
         elif event.key() in [Qt.Key_Backspace, Qt.Key_Delete]:
             if self.textCursor().position() - 1 >= self.min_char:
                 QTextEdit.keyPressEvent(self, event)
