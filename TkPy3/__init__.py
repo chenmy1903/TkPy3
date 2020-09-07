@@ -63,7 +63,7 @@ class MainWindow(QMainWindow):
         add_diff()
         self.tray = set_tray_items(self)
         self.tray.menu.triggered[QAction].connect(self.MenuEvents)
-        self.assert_activate()
+        # self.assert_activate()
         self.untitled_number = 0
         self.not_save_list = []
         self.setWindowTitle(get_configs()['init_title'])
@@ -130,7 +130,7 @@ class MainWindow(QMainWindow):
         elif isinstance(get_configs()['end_activate_day'], bool):
             add_config('is_activate', True)
 
-        elif get_configs()['end_activate_day'] <= datetime.date.today():
+        elif get_configs()['end_activate_day'] > datetime.date.today():
             add_config('is_activate', False)
             self.assert_activate()
         random_activation_codes()
@@ -588,10 +588,10 @@ def main():
     server = HelpServer()
     server.start()
     app = QApplication(sys.argv)
-    app.setQuitOnLastWindowClosed(False)
     tkpy3_setup(app)
     widget = MainWindow()
     widget.show()
+    app.setQuitOnLastWindowClosed(False)
     return_code = app.exec_()
     server.terminate()
     return return_code
