@@ -28,13 +28,19 @@ python run_code.py
 > ## 注意: 不要用IDLE运行
 
 # 版本记录
+#### 3.6.855
+<pre>
+加入Matplotlib绘图的支持
+加入TkPy Web浏览器
+加入部分英文支持
+</pre>
 #### 3.6.854
 <pre>
 加入托盘
 修复Markdown转换器的Bug
 更新图标 (源于Eric6)
 支持多国语言 (现在只有中文)
-加入PyShell (Html Bug Report)
+加入PyShell
 </pre>
 ##### 3.6.855预告
 <pre>

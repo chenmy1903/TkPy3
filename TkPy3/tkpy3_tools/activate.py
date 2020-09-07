@@ -55,7 +55,7 @@ class ActivateDialog(QDialog):
 
     def activate_tkpy3(self):
         add_config('is_activate', True)
-        QMessageBox.information(self, '提示', '您已激活成功')
+        QMessageBox.information(self, '提示', '您已激活成功。')
         self.close()
 
     def assert_activate_code(self, code: str = ""):

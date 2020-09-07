@@ -16,7 +16,7 @@ class TkPyExtensionType(dict):
                       command=command, **kwargs)
 
     def __repr__(self):
-        commands = [f'{key}={repr(value)}' for key, value in self.items()]
+        commands = [f'{repr(key)}={repr(value)}' for key, value in self.items()]
         return 'TkPyExtensionType({})'.format(", ".join(commands))
 
     def set_command(self, command: types.FunctionType):

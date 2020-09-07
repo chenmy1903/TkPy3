@@ -4,6 +4,7 @@ from __future__ import print_function, unicode_literals
 
 import os
 import random
+import cgitb
 import sys
 import datetime
 import warnings
@@ -38,13 +39,11 @@ from TkPy3.tkpy3_tools.start import setup as tkpy3_setup, set_icon_to_tkpy3, che
 from TkPy3.tkpy3_tools.config_window import ConfigDialog
 from TkPy3.tkpy3_tools.editor import BaseEditor, EditSubWindow
 from TkPy3.tkpy3_tools.events import TkPyEventType, get_event
-from TkPy3.locale_dirs import BASE_DIR, images_icon_dir, pixmaps
+from TkPy3.locale_dirs import BASE_DIR, pixmaps
 from TkPy3.tkpy3_tools.relys import RelyDialog, InstallDialog
 from TkPy3.tkpy3_tools.markdown_tools import PyQt5MarkdownDialog
-from TkPy3.tkpy3_tools.style import load_style_sheet
 from TkPy3.tkpy3_tools.system import set_tray_items
 from TkPy3.version import version as __version__
-from TkPy3.tkpy3_tools.errors import TkPyIdeError, TkPyQtError
 from TkPy3.tkpy3_tools.activate import ActivateDialog
 from TkPy3.tkpy3_tools.activate_game import random_activation_codes
 from TkPy3.tkpy3_tools.report import BugReportWindow, NewFunctionReportWindow
@@ -55,6 +54,7 @@ tkpy3_github_url = "https://github.com/chenmy1903/TkPy3"
 
 windows_set_taskbar_icon()
 check_system()
+cgitb.enable(format='text')
 
 
 class MainWindow(QMainWindow):
@@ -326,8 +326,7 @@ PyQt5: {PYQT_VERSION_STR}
 TkPy3官网: https://github.com/chenmy1903/TkPy3
 
 TkPy3激活:
-激活到期时间: {get_configs()['end_activate_day']
-            if not isinstance(get_configs()['end_activate_day'], bool) else _("永久激活")}
+激活到期时间: {get_configs()['end_activate_day'] if not isinstance(get_configs()['end_activate_day'], bool) else _("永久激活")}
 -----------------------------------
 {__author__} ©2020 All Rights Reserved.
                 """)
@@ -439,6 +438,8 @@ TkPy3激活:
         elif event.text() == _('打开Python包帮助'):
             PythonPackageHelpDialog().exec()
         elif event.text() == _('排列Import 语句'):
+            if self.window_mdi_activate_is_pyshell():
+                return
             widget = self.windows_mdi.activeSubWindow().widget()
             widget.sort_imports()
         elif event.text() == _('Qt文件预览'):

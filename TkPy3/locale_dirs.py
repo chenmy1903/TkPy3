@@ -32,5 +32,6 @@ pixmaps = {
     'help_about': os.path.join(images_icon_dir, 'helpAbout.svg'),
     'about_qt': os.path.join(images_icon_dir, 'helpAboutQt.svg'),
     'ui_previewer': os.path.join(images_icon_dir, 'uiPreviewer.svg'),
-    'search': os.path.join(images_icon_dir, 'preferences-search.svg')
+    'search': os.path.join(images_icon_dir, 'preferences-search.svg'),
+    'browser': os.path.join(images_icon_dir, 'browser.svg'),
 }

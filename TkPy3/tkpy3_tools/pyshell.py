@@ -1,14 +1,26 @@
 from PyQt5.QtGui import QCloseEvent, QKeyEvent, QTextCursor
-from PyQt5.QtWidgets import QWidget, QApplication, QTextEdit, QMessageBox, QVBoxLayout, QErrorMessage
-from PyQt5.QtCore import QThread, pyqtSignal, Qt, QMimeData
+from PyQt5.QtWidgets import QWidget, QApplication, QTextEdit, QMessageBox, QVBoxLayout
+from PyQt5.QtCore import QThread, pyqtSignal, Qt, QMimeData, QObject
 
 import sys
 import platform
 import code
 import builtins
 
-from TkPy3.tkpy3_tools.start import tkpy3_setup
 from TkPy3.tkpy3_tools.gnu_gettext_extensions import _
+from TkPy3.tkpy3_tools.matplotlib_tools import tools as matplotlib_tools
+from TkPy3.tkpy3_tools.start import tkpy3_setup
+
+
+class ShellTkPy(QObject):
+    pass
+
+
+tkpy = ShellTkPy()
+
+
+def get_tkpy():
+    return tkpy
 
 
 class Shell(code.InteractiveConsole, QThread):
@@ -19,7 +31,7 @@ class Shell(code.InteractiveConsole, QThread):
     close = pyqtSignal()
     input_res_text = None
 
-    def __init__(self, global_locals=None, filename="stdout"):
+    def __init__(self, global_locals={'get_tkpy': get_tkpy}, filename="<stdout>"):
         code.InteractiveConsole.__init__(self, global_locals, filename)
         QThread.__init__(self)
 
@@ -151,6 +163,7 @@ class TkPyShell(QWidget):
         self.setWindowTitle(f'PyShell (Python {platform.python_version()})')
         self.__layout = QVBoxLayout()
         self.text = ShellText()
+        matplotlib_tools.images.connect(self.show_images)
         self.shell = Shell()
         self.shell.start()
         self.shell.output.connect(lambda text: self.text.insertPlainText(text))
@@ -162,13 +175,24 @@ class TkPyShell(QWidget):
         self.__layout.addWidget(self.text)
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        res = QMessageBox.question(self, _('问题'), _('是否退出PyShell?这将会结束这个Shell进程。'))
+        res = QMessageBox.question(
+            self, _('问题'), _('是否退出PyShell?这将会结束这个Shell进程。'))
         if res == QMessageBox.Yes:
             self.shell.terminate()
             self.close_sub_window.emit()
             event.accept()
         else:
             event.ignore()
+
+    def show_images(self, images: list):
+        for image in images:
+            if image:
+                image.window.setWindowTitle(
+                    'TkPy PyShell Matplotlib Tools - {}'.format(image.window.windowTitle()))
+                image.window.setWindowState(Qt.WindowMaximized)
+                image.window.show()
+                # import matplotlib.pyplot as plt; plt.plot([1, 2, 3]); plt.show()
+                image.window.setWindowState(Qt.WindowNoState)
 
 
 if __name__ == "__main__":
